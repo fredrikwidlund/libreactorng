@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=${prefix}/include
+
+Name: libvalue
+Description: high performance C value containers
+Version: @VERSION@
+Libs: -L${libdir} -lvalue
+Cflags: -I${includedir} -flto
