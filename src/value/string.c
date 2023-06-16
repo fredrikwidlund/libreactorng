@@ -77,7 +77,7 @@ enum
   STATE_REJECT = 12
 };
 
-static uint32_t string_utf8_decode_code(uint32_t *state, uint32_t *codep, uint32_t byte)
+static uint32_t string_utf8_decode_code(uint32_t *state, uint32_t *codep, uint8_t byte)
 {
   static const uint8_t utf8d[] = {
       0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
