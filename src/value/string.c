@@ -103,7 +103,7 @@ static uint32_t string_utf8_decode_code(uint32_t *state, uint32_t *codep, uint32
 
 static bool string_utf8_regular(char c)
 {
-  return c >= 0x20 && c < 0x80 && c != '"' && c != '\\';
+  return c >= 0x20 && (unsigned char) c < 0x80 && c != '"' && c != '\\';
 }
 
 static uint16_t string_utf8_get_encoded_basic(const char *from, const char **end)
@@ -251,7 +251,7 @@ bool string_utf8_encode(buffer_t *buffer, const string_t utf8_string, bool ascii
         p++;
       buffer_append(buffer, data_define(p_old, p - p_old));
     }
-    else if (*p >= 0x80)
+    else if ((unsigned char) *p >= 0x80)
     {
       code = string_utf8_get(p, p_end, &p);
       if (ascii)
@@ -313,7 +313,7 @@ string_t string_utf8_decode(const char *from, const char **end)
         p++;
       buffer_append(&buffer, data_define(p_old, p - p_old));
     }
-    else if (*p >= 0x80)
+    else if ((unsigned char) *p >= 0x80)
     {
       code = string_utf8_get(p, p + 4, &p);
       string_utf8_put(&buffer, code);
