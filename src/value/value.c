@@ -84,12 +84,11 @@ bool value_undefinedp(const value_t *value)
 
 /* null */
 
-//const char *const VALUE_NULL = "null";
-const uintptr_t VALUE_NULL = (uintptr_t) "null";
+const char VALUE_NULL[] = "null";
 
 value_t *value_null(void)
 {
-  static const value_table_t value_null_table = {.user = VALUE_NULL};
+  static const value_table_t value_null_table = {.user = (const uintptr_t) VALUE_NULL};
   static const value_header_t value_null_header = {.table = &value_null_table};
 
   return (value_t *) value_null_header.value;
@@ -97,7 +96,7 @@ value_t *value_null(void)
 
 bool value_nullp(const value_t *value)
 {
-  return value_type(value) == (const char *) VALUE_NULL;
+  return value_type(value) == VALUE_NULL;
 }
 
 /* bool */
