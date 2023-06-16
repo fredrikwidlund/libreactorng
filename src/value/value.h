@@ -31,7 +31,8 @@ bool         value_undefinedp(const value_t *);
 
 /* null */
 
-extern const char * const VALUE_NULL;
+extern const uintptr_t VALUE_NULL;
+//extern const char * const VALUE_NULL;
 
 value_t     *value_null(void);
 bool         value_nullp(const value_t *);
