@@ -85,7 +85,7 @@ __attribute__((flatten)) bool value_buffer_encode(buffer_t *buffer, const value_
       else
       {
         context = vector_back(&stack);
-        state = context->keys ? state = STATE_OBJECT_REST : STATE_ARRAY_REST;
+        state = context->keys ? STATE_OBJECT_REST : STATE_ARRAY_REST;
       }
       break;
     case STATE_NULL:

@@ -70,7 +70,7 @@ const char *value_type(const value_t *value)
 
 /* undefined */
 
-const char *const VALUE_UNDEFINED = "undefined";
+const char VALUE_UNDEFINED[] = "undefined";
 
 value_t *value_undefined(void)
 {
@@ -84,7 +84,7 @@ bool value_undefinedp(const value_t *value)
 
 /* null */
 
-const char *const VALUE_NULL = "null";
+const char VALUE_NULL[] = "null";
 
 value_t *value_null(void)
 {
@@ -101,11 +101,11 @@ bool value_nullp(const value_t *value)
 
 /* bool */
 
-const char *const VALUE_BOOL = "bool";
+const char VALUE_BOOL[] = "bool";
 
 value_t *value_bool(bool boolean)
 {
-  static const value_table_t value_bool_table = {.user = (uintptr_t) VALUE_BOOL};
+  static value_table_t value_bool_table = {.user = (uintptr_t) VALUE_BOOL};
 
   return value_create(&boolean, sizeof boolean, &value_bool_table);
 }
@@ -122,11 +122,11 @@ bool value_bool_get(const value_t *boolean)
 
 /* number */
 
-const char *const VALUE_NUMBER = "number";
+const char VALUE_NUMBER[] = "number";
 
 value_t *value_number(long double number)
 {
-  static const value_table_t value_number_table = {.user = (uintptr_t) VALUE_NUMBER};
+  static value_table_t value_number_table = {.user = (uintptr_t) VALUE_NUMBER};
 
   return value_create(&number, sizeof number, &value_number_table);
 }
@@ -143,7 +143,7 @@ long double value_number_get(const value_t *number)
 
 /* string */
 
-const char *const VALUE_STRING = "string";
+const char VALUE_STRING[] = "string";
 
 static void value_string_release_string(void *arg)
 {
@@ -152,7 +152,7 @@ static void value_string_release_string(void *arg)
 
 value_t *value_string(const string_t string)
 {
-  static const value_table_t value_string_table = {.user = (uintptr_t) VALUE_STRING,
+  static value_table_t value_string_table = {.user = (uintptr_t) VALUE_STRING,
                                                    .destroy = value_string_release_string};
   string_t copy = data_copyz(string);
 
@@ -161,14 +161,14 @@ value_t *value_string(const string_t string)
 
 value_t *value_string_constant(const string_t string)
 {
-  static const value_table_t value_string_table = {.user = (uintptr_t) VALUE_STRING};
+  static value_table_t value_string_table = {.user = (uintptr_t) VALUE_STRING};
 
   return value_create(&string, sizeof string, &value_string_table);
 }
 
 value_t *value_string_release(const string_t string)
 {
-  static const value_table_t value_string_table = {.user = (uintptr_t) VALUE_STRING,
+  static value_table_t value_string_table = {.user = (uintptr_t) VALUE_STRING,
                                                    .destroy = value_string_release_string};
 
   return value_create(&string, sizeof string, &value_string_table);
@@ -196,7 +196,7 @@ size_t value_string_size(const value_t *string)
 
 /* array */
 
-const char *const VALUE_ARRAY = "array";
+const char VALUE_ARRAY[] = "array";
 
 static void value_array_release_element(void *arg)
 {
@@ -210,7 +210,7 @@ static void value_array_destroy(value_t *array)
 
 value_t *value_array(void)
 {
-  static const value_table_t value_array_table = {.user = (uintptr_t) VALUE_ARRAY, .destroy = value_array_destroy};
+  static value_table_t value_array_table = {.user = (uintptr_t) VALUE_ARRAY, .destroy = value_array_destroy};
   vector_t *vector;
 
   vector = value_create(NULL, sizeof *vector, &value_array_table);
@@ -258,7 +258,7 @@ void value_array_remove(value_t *array, size_t index)
 
 /* object */
 
-const char *const VALUE_OBJECT = "object";
+const char VALUE_OBJECT[] = "object";
 
 static void value_object_release_entry(mapd_entry_t *entry)
 {
@@ -273,7 +273,7 @@ static void value_object_release(void *arg)
 
 value_t *value_object(void)
 {
-  static const value_table_t value_object_table = {.user = (uintptr_t) VALUE_OBJECT, .destroy = value_object_release};
+  static value_table_t value_object_table = {.user = (uintptr_t) VALUE_OBJECT, .destroy = value_object_release};
   mapd_t *mapd;
 
   mapd = value_create(NULL, sizeof *mapd, &value_object_table);
