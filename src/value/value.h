@@ -38,8 +38,7 @@ bool         value_nullp(const value_t *);
 
 /* bool */
 
-extern const char * const VALUE_BOOL;
-
+extern const char VALUE_BOOL[];
 
 value_t     *value_bool(bool);
 bool         value_boolp(const value_t *);

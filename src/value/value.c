@@ -88,7 +88,7 @@ const char VALUE_NULL[] = "null";
 
 value_t *value_null(void)
 {
-  static const value_table_t value_null_table = {.user = (const uintptr_t) VALUE_NULL};
+  static const value_table_t value_null_table = {.user = (uintptr_t) VALUE_NULL};
   static const value_header_t value_null_header = {.table = &value_null_table};
 
   return (value_t *) value_null_header.value;
@@ -101,7 +101,7 @@ bool value_nullp(const value_t *value)
 
 /* bool */
 
-const char *const VALUE_BOOL = "bool";
+const char VALUE_BOOL[] = "bool";
 
 value_t *value_bool(bool boolean)
 {
