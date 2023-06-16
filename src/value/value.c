@@ -70,7 +70,7 @@ const char *value_type(const value_t *value)
 
 /* undefined */
 
-const char *const VALUE_UNDEFINED = "undefined";
+const char VALUE_UNDEFINED[] = "undefined";
 
 value_t *value_undefined(void)
 {
@@ -122,7 +122,7 @@ bool value_bool_get(const value_t *boolean)
 
 /* number */
 
-const char *const VALUE_NUMBER = "number";
+const char VALUE_NUMBER[] = "number";
 
 value_t *value_number(long double number)
 {
@@ -143,7 +143,7 @@ long double value_number_get(const value_t *number)
 
 /* string */
 
-const char *const VALUE_STRING = "string";
+const char VALUE_STRING[] = "string";
 
 static void value_string_release_string(void *arg)
 {
@@ -196,7 +196,7 @@ size_t value_string_size(const value_t *string)
 
 /* array */
 
-const char *const VALUE_ARRAY = "array";
+const char VALUE_ARRAY[] = "array";
 
 static void value_array_release_element(void *arg)
 {
@@ -258,7 +258,7 @@ void value_array_remove(value_t *array, size_t index)
 
 /* object */
 
-const char *const VALUE_OBJECT = "object";
+const char VALUE_OBJECT[] = "object";
 
 static void value_object_release_entry(mapd_entry_t *entry)
 {

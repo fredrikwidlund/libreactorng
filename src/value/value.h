@@ -24,7 +24,7 @@ const char  *value_type(const value_t *);
 
 /* undefined */
 
-extern const char * const VALUE_UNDEFINED;
+extern const char VALUE_UNDEFINED[];
 
 value_t     *value_undefined(void);
 bool         value_undefinedp(const value_t *);
@@ -46,7 +46,7 @@ bool         value_bool_get(const value_t *);
 
 /* number */
 
-extern const char * const VALUE_NUMBER;
+extern const char VALUE_NUMBER[];
 
 value_t     *value_number(long double);
 bool         value_numberp(const value_t *);
@@ -54,7 +54,7 @@ long double  value_number_get(const value_t *);
 
 /* string */
 
-extern const char *const VALUE_STRING;
+extern const char VALUE_STRING[];
 
 value_t     *value_string(const string_t);
 value_t     *value_string_constant(const string_t);
@@ -66,7 +66,7 @@ size_t       value_string_size(const value_t *);
 
 /* array */
 
-extern const char * const VALUE_ARRAY;
+extern const char VALUE_ARRAY[];
 
 #define value_array_foreach(array, element)                             \
   if (value_arrayp(array))                                              \
@@ -84,7 +84,7 @@ void         value_array_remove(value_t *, size_t);
 
 /* object */
 
-extern const char * const VALUE_OBJECT;
+extern const char VALUE_OBJECT[];
 
 #define value_object_foreach(object, key, value)                                                             \
   if (value_objectp(object))                                                                                 \
