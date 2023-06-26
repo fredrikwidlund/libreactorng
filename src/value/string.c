@@ -103,7 +103,15 @@ static uint32_t string_utf8_decode_code(uint32_t *state, uint32_t *codep, uint8_
 
 static bool string_utf8_regular(char c)
 {
-  return c >= 0x20 && (unsigned char) c < 0x80 && c != '"' && c != '\\';
+  if (c == '"')
+    return false;
+  if (c == '\\')
+    return false;
+  if (c < 0x20)
+    return false;
+  if ((unsigned char) c >= 0x80)
+    return false;
+  return true;
 }
 
 static uint16_t string_utf8_get_encoded_basic(const char *from, const char **end)
