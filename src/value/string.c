@@ -101,7 +101,7 @@ static uint32_t string_utf8_decode_code(uint32_t *state, uint32_t *codep, uint8_
   return *state;
 }
 
-static bool string_utf8_regular(char c)
+static bool string_utf8_regular(uint8_t c)
 {
   if (c == '"')
     return false;
@@ -109,7 +109,7 @@ static bool string_utf8_regular(char c)
     return false;
   if (c < 0x20)
     return false;
-  if ((unsigned char) c >= 0x80)
+  if (c >= 0x80)
     return false;
   return true;
 }
