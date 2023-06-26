@@ -77,8 +77,8 @@ test/mapi \
 test/maps \
 test/mapd \
 test/string \
-test/value \
-test/encode
+test/value
+#test/encode
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 

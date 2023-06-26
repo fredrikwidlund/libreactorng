@@ -271,6 +271,18 @@ static void value_object_release(void *arg)
   mapd_destruct(arg, value_object_release_entry);
 }
 
+static int value_object_keys_compare(const void *p1, const void *p2)
+{
+  const data_t d1 = **(data_t **) p1, d2 = **(data_t **) p2;
+  size_t s1 = data_size(d1), s2 = data_size(d2);
+  int result;
+
+  result = memcmp(data_base(d1), data_base(d2), MIN(s1, s2));
+  if (result)
+    return result;
+  return s1 > s2 ? 1 : -1;
+}
+
 value_t *value_object(void)
 {
   static value_table_t value_object_table = {.user = (uintptr_t) VALUE_OBJECT, .destroy = value_object_release};
@@ -323,18 +335,6 @@ void value_object_delete(value_t *object, const string_t key)
     return;
 
   mapd_erase((mapd_t *) object, key, value_object_release_entry);
-}
-
-int value_object_keys_compare(const void *p1, const void *p2)
-{
-  const data_t d1 = **(data_t **) p1, d2 = **(data_t **) p2;
-  size_t s1 = data_size(d1), s2 = data_size(d2);
-  int result;
-
-  result = memcmp(data_base(d1), data_base(d2), MIN(s1, s2));
-  if (result)
-    return result;
-  return s1 > s2 ? 1 : -1;
 }
 
 value_t *value_object_keys(const value_t *object)

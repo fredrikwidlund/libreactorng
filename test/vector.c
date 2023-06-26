@@ -12,6 +12,13 @@ static void release(void *object)
   free(*(char **) object);
 }
 
+static int compare(const void *p1, const void *p2)
+{
+  const char *s1 = *(char **) p1, *s2 = *(char **) p2;
+
+  return strcmp(s1, s2);
+}
+
 void test_vector(__attribute__((unused)) void **state)
 {
   vector_t v;
@@ -57,6 +64,11 @@ void test_vector(__attribute__((unused)) void **state)
   }
   for (i = 0; i < a_len; i++)
     assert_string_equal(a[i], *(char **) vector_at(&v, i));
+
+  vector_sort(&v, compare);
+  assert_string_equal(*(char **) vector_at(&v, 3), "pointers");
+  assert_string_equal(*(char **) vector_at(&v, 4), "string");
+
   vector_erase(&v, 0, release);
   assert_string_equal(a[1], *(char **) vector_front(&v));
 
