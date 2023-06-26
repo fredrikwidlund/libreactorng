@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if command -v valgrind; then
-    for file in include data hash buffer list vector map mapi maps mapd string value
+    for file in include data hash buffer list vector map mapi maps mapd string value encode
 #    for file in include data hash buffer list vector map mapi maps mapd string value encode
     do
         echo [$file]
