@@ -22,6 +22,6 @@ jobs:
     - name: make
       run: make
     - name: make check
-      run: make check || cat test/coverage.sh.log
+      run: make check || cat string.c.gcov
     - name: make distcheck
       run: make distcheck
