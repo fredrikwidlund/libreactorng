@@ -24,7 +24,7 @@ string_t string_null(void)
 
 string_t string_copy(const string_t string)
 {
-  return data_copyz(string);
+  return string_nullp(string) ? string_null() : data_copyz(string);
 }
 
 void string_release(const string_t string)
@@ -118,28 +118,19 @@ static uint16_t string_utf8_get_encoded_basic(const char *from, const char **end
     code = xdigit[(int) p[2]] << 12 | xdigit[(int) p[3]] << 8 | xdigit[(int) p[4]] << 4 | xdigit[(int) p[5]];
     p += 6;
   }
-  if (end)
-    *end = p;
+  *end = p;
   return code;
 }
 
 size_t string_utf8_length(const string_t string)
 {
   const char *from = string_base(string), *to = from + string_size(string);
-  uint32_t state = STATE_ACCEPT, code = 0;
   size_t length = 0;
 
   while (from < to)
   {
-    string_utf8_decode_code(&state, &code, *from);
-    if (state == STATE_REJECT)
-      break;
-    from++;
-    if (state == STATE_ACCEPT)
-    {
-      code = 0;
-      length++;
-    }
+    (void) string_utf8_get(from, to, &from);
+    length++;
   }
   return length;
 }
@@ -154,13 +145,13 @@ uint32_t string_utf8_get(const char *from, const char *to, const char **end)
   {
     string_utf8_decode_code(&state, &code, *from);
     from++;
-    if (state == STATE_REJECT)
+    if (state == STATE_ACCEPT)
+      break;
+    if (state == STATE_REJECT || from == to)
     {
       code = 0xFFFD;
       break;
     }
-    if (state == STATE_ACCEPT)
-      break;
   }
   if (end)
     *end = from;
@@ -235,7 +226,6 @@ void string_utf8_put_encoded(buffer_t *buffer, uint32_t code)
 bool string_utf8_encode(buffer_t *buffer, const string_t utf8_string, bool ascii)
 {
   const char *p_old, *p = string_base(utf8_string), *p_end = p + string_size(utf8_string);
-  size_t size = buffer_size(buffer);
   uint32_t code;
 
   while (1)
@@ -276,7 +266,7 @@ bool string_utf8_encode(buffer_t *buffer, const string_t utf8_string, bool ascii
         buffer_append(buffer, string("\\n"));
         break;
       case '\r':
-        buffer_append(buffer, string("\\t"));
+        buffer_append(buffer, string("\\r"));
         break;
       case '\t':
         buffer_append(buffer, string("\\t"));
@@ -286,11 +276,6 @@ bool string_utf8_encode(buffer_t *buffer, const string_t utf8_string, bool ascii
         break;
       }
       p++;
-    }
-    if (p == p_old)
-    {
-      buffer_resize(buffer, size);
-      return false;
     }
   }
 }

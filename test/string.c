@@ -16,7 +16,24 @@ static void test_string(__attribute__((unused)) void **arg)
   s1 = string_define(s, strlen(s));
   assert_true(string_equal(s1, string("test")));
 
+  s1 = string_null();;
+  assert_int_equal(string_utf8_length(s1), 0);
+  string_release(s1);
+
+  /* basic utf8 */
+  s1 = string_utf8_decode("\xE2\x98\x83", &end);
+  assert_string_equal(end, "");
+  assert_int_equal(string_size(s1), 3);
+  assert_int_equal(string_utf8_length(s1), 1);
+  string_release(s1);
+
   /* encoding and decoding */
+  s = "";
+  assert_int_equal(string_utf8_get(s, s + strlen(s), NULL), 0);
+
+  s = "\xc2";
+  assert_int_equal(string_utf8_get(s, s + strlen(s), NULL), 0xFFFD);
+
   s = "\xc2\xa3";
   assert_int_equal(string_utf8_get(s, s + strlen(s), NULL), 0x00a3);
   s = "\xE0\xA0\xB3";
@@ -48,6 +65,7 @@ static void test_string(__attribute__((unused)) void **arg)
   s1 = string_utf8_decode("snowman \xE2\x98\x83", &end);
   assert_string_equal(end, "");
   assert_int_equal(string_size(s1), 11);
+  assert_int_equal(string_utf8_length(s1), 9);
   string_release(s1);
 
   /* ascii with ending with " */
@@ -116,10 +134,46 @@ static void test_string(__attribute__((unused)) void **arg)
   string_release(s1);
   string_release(s2);
 
+  s1 = string_utf8_decode("", NULL);
+  assert_true(string_nullp(s1));
+  string_release(s1);
+
+  /* string_utf8_encode */
+  buffer_t b;
+  buffer_construct(&b);
+  assert_true(string_utf8_encode(&b, string("abc\xE2\x98\x83\"\\\f\n\r\t\x01"), true));
+  buffer_append(&b, data_define((char[]) {0}, 1));
+  assert_string_equal("abc\\u2603\\\"\\\\\\f\\n\\r\\t\\u0001", (char *) buffer_base(&b));
+
+  buffer_clear(&b);
+
+  assert_true(string_utf8_encode(&b, string("abc\xE2\x98\x83\"\\\f\n\r\t\x01"), false));
+  buffer_append(&b, data_define((char[]) {0}, 1));
+  assert_string_equal("abc\xE2\x98\x83\\\"\\\\\\f\\n\\r\\t\\u0001", (char *) buffer_base(&b));
+
+  buffer_clear(&b);
+  assert_true(string_utf8_encode(&b, string("\U0001F600"), true));
+
+  buffer_clear(&b);
+  assert_true(string_utf8_encode(&b, string("test"), true));
+
+  buffer_destruct(&b);
+
   /* clear null */
   s1 = string_null();
   assert_int_equal(string_utf8_length(s1), 0);
   string_release(s1);
+
+  /* copy */
+  s1 = string_null();
+  s2 = string_copy(s1);
+  assert_true(string_nullp(s2));
+  string_release(s2);
+
+  s1 = string("test");
+  s2 = string_copy(s1);
+  assert_string_equal(string_base(s2), "test");
+  string_release(s2);
 }
 
 int main()

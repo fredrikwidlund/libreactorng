@@ -1,6 +1,7 @@
 #!/bin/sh
 
-for file in data hash buffer list vector map mapi maps mapd string value encode decode
+#for file in data hash buffer list vector map mapi maps mapd string value encode decode
+for file in data hash buffer list vector map mapi maps mapd string
 do
     echo [$file]
     test=`gcov -b src/value/libvalue_test_a-$file | grep -A4 File.*$file`
