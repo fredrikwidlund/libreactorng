@@ -61,8 +61,8 @@ static void test_undefined(__attribute__((unused)) void **arg)
   assert_int_equal(value_ref(v), 0);
   assert_int_equal(value_user(v), 0);
   assert_int_equal(value_type(v), VALUE_UNDEFINED);
-  assert_true(value_undefinedp(v));
-  assert_false(value_undefinedp(value_null()));
+  assert_true(value_is_undefined(v));
+  assert_false(value_is_undefined(value_null()));
   value_release(v);
 }
 
@@ -75,8 +75,8 @@ static void test_null(__attribute__((unused)) void **arg)
   value_release(v);
   assert_int_equal(value_ref(v), 0);
   assert_int_equal(value_type(v), VALUE_NULL);
-  assert_true(value_nullp(v));
-  assert_false(value_nullp(value_undefined()));
+  assert_true(value_is_null(v));
+  assert_false(value_is_null(value_undefined()));
   value_release(v);
 }
 
@@ -89,8 +89,8 @@ static void test_bool(__attribute__((unused)) void **arg)
   value_release(v);
   assert_int_equal(value_ref(v), 1);
   assert_int_equal(value_type(v), VALUE_BOOL);
-  assert_true(value_boolp(v));
-  assert_false(value_boolp(value_undefined()));
+  assert_true(value_is_bool(v));
+  assert_false(value_is_bool(value_undefined()));
   assert_true(value_bool_get(v));
   assert_false(value_bool_get(value_null()));
   value_release(v);
@@ -109,8 +109,8 @@ static void test_number(__attribute__((unused)) void **arg)
   value_release(v);
   assert_int_equal(value_ref(v), 1);
   assert_int_equal(value_type(v), VALUE_NUMBER);
-  assert_true(value_numberp(v));
-  assert_false(value_numberp(value_undefined()));
+  assert_true(value_is_number(v));
+  assert_false(value_is_number(value_undefined()));
   assert_true(value_number_get(v) == 3.14159);
   assert_true(value_number_get(value_undefined()) == 0);
   value_release(v);
@@ -125,8 +125,8 @@ static void test_string(__attribute__((unused)) void **arg)
   value_release(v);
   assert_int_equal(value_ref(v), 1);
   assert_int_equal(value_type(v), VALUE_STRING);
-  assert_true(value_stringp(v));
-  assert_false(value_stringp(value_undefined()));
+  assert_true(value_is_string(v));
+  assert_false(value_is_string(value_undefined()));
   assert_string_equal(string_base(value_string_get(v)), "test");
   assert_true(string_empty(value_string_get(value_undefined())));
   value_release(v);
@@ -140,6 +140,9 @@ static void test_string(__attribute__((unused)) void **arg)
   assert_string_equal(value_string_base(v), "test");
   assert_int_equal(value_string_size(v), strlen("test"));
   value_release(v);
+
+  assert_int_equal(value_string_size(value_undefined()), 0);
+  assert_true(value_string_base(value_undefined()) == NULL);
 }
 
 static void test_array(__attribute__((unused)) void **arg)
@@ -147,18 +150,18 @@ static void test_array(__attribute__((unused)) void **arg)
   value_t *v, *e;
 
   v = value_undefined();
-  assert_false(value_arrayp(v));
+  assert_false(value_is_array(v));
   assert_int_equal(value_array_length(v), 0);
   e = value_number(42);
   value_array_append(v, e);
   value_release(e);
   value_array_append_release(v, value_number(42));
-  assert_true(value_undefinedp(value_array_get(v, 0)));
+  assert_true(value_is_undefined(value_array_get(v, 0)));
   value_array_remove(v, 0);
   value_release(v);
 
   v = value_array();
-  assert_true(value_arrayp(v));
+  assert_true(value_is_array(v));
   value_hold(v);
   value_release(v);
   e = value_number(42);
@@ -179,9 +182,9 @@ static void test_object(__attribute__((unused)) void **arg)
   v = value_undefined();
   value_object_set_release(v, string("test"), value_number(0));
   value_object_delete(v, string("test"));
-  assert_true(value_undefinedp(value_object_get(v, string("test"))));
+  assert_true(value_is_undefined(value_object_get(v, string("test"))));
   assert_int_equal(value_object_size(v), 0);
-  assert_false(value_objectp(v));
+  assert_false(value_is_object(v));
 
   array = value_object_keys(v);
   assert_int_equal(value_array_length(array), 0);
@@ -192,7 +195,7 @@ static void test_object(__attribute__((unused)) void **arg)
   value_release(v);
   assert_int_equal(value_ref(v), 1);
   assert_int_equal(value_type(v), VALUE_OBJECT);
-  assert_true(value_objectp(v));
+  assert_true(value_is_object(v));
 
   value_object_set_release(v, string("k1"), value_number(42));
   value_object_set_release(v, string("k2"), value_bool(false));
@@ -206,9 +209,9 @@ static void test_object(__attribute__((unused)) void **arg)
   assert_int_equal(value_object_size(v), 6);
 
   e = value_object_get(v, string("k3"));
-  assert_true(value_stringp(e));
+  assert_true(value_is_string(e));
   assert_string_equal(value_string_base(e), "text2");
-  assert_true(value_undefinedp(value_object_get(v, string("k6"))));
+  assert_true(value_is_undefined(value_object_get(v, string("k6"))));
 
   keys = value_object_keys(v);
   assert_int_equal(value_array_length(keys), 6);

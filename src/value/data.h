@@ -29,7 +29,6 @@ void    data_release(data_t);
 
 size_t  data_size(const data_t);
 bool    data_empty(const data_t);
-bool    data_nullp(const data_t);
 
 /* element access */
 

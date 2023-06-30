@@ -77,7 +77,7 @@ value_t *value_undefined(void)
   return NULL;
 }
 
-bool value_undefinedp(const value_t *value)
+bool value_is_undefined(const value_t *value)
 {
   return value_type(value) == VALUE_UNDEFINED;
 }
@@ -94,7 +94,7 @@ value_t *value_null(void)
   return (value_t *) value_null_header.value;
 }
 
-bool value_nullp(const value_t *value)
+bool value_is_null(const value_t *value)
 {
   return value_type(value) == VALUE_NULL;
 }
@@ -110,14 +110,14 @@ value_t *value_bool(bool boolean)
   return value_create(&boolean, sizeof boolean, &value_bool_table);
 }
 
-bool value_boolp(const value_t *boolean)
+bool value_is_bool(const value_t *boolean)
 {
   return value_type(boolean) == VALUE_BOOL;
 }
 
 bool value_bool_get(const value_t *boolean)
 {
-  return value_boolp(boolean) ? *(bool *) boolean : false;
+  return value_is_bool(boolean) ? *(bool *) boolean : false;
 }
 
 /* number */
@@ -131,14 +131,14 @@ value_t *value_number(long double number)
   return value_create(&number, sizeof number, &value_number_table);
 }
 
-bool value_numberp(const value_t *number)
+bool value_is_number(const value_t *number)
 {
   return value_type(number) == VALUE_NUMBER;
 }
 
 long double value_number_get(const value_t *number)
 {
-  return value_numberp(number) ? *(long double *) number : 0;
+  return value_is_number(number) ? *(long double *) number : 0;
 }
 
 /* string */
@@ -174,24 +174,24 @@ value_t *value_string_release(const string_t string)
   return value_create(&string, sizeof string, &value_string_table);
 }
 
-bool value_stringp(const value_t *string)
+bool value_is_string(const value_t *string)
 {
   return value_type(string) == VALUE_STRING;
 }
 
 string_t value_string_get(const value_t *string)
 {
-  return value_stringp(string) ? *(string_t *) string : string_null();
+  return value_is_string(string) ? *(string_t *) string : string_null();
 }
 
 char *value_string_base(const value_t *string)
 {
-  return string_base(*(string_t *) string);
+  return value_is_string(string) ? string_base(*(string_t *) string) : NULL;
 }
 
 size_t value_string_size(const value_t *string)
 {
-  return string_size(*(string_t *) string);
+  return value_is_string(string) ? string_size(*(string_t *) string) : 0;
 }
 
 /* array */
@@ -218,19 +218,19 @@ value_t *value_array(void)
   return vector;
 }
 
-bool value_arrayp(const value_t *array)
+bool value_is_array(const value_t *array)
 {
   return value_type(array) == VALUE_ARRAY;
 }
 
 size_t value_array_length(const value_t *array)
 {
-  return value_arrayp(array) ? vector_size((vector_t *) array) : 0;
+  return value_is_array(array) ? vector_size((vector_t *) array) : 0;
 }
 
 void value_array_append(value_t *array, value_t *element)
 {
-  if (!value_arrayp(array))
+  if (!value_is_array(array))
     return;
   value_hold(element);
   vector_push_back(array, &element);
@@ -244,14 +244,14 @@ void value_array_append_release(value_t *array, value_t *element)
 
 value_t *value_array_get(const value_t *array, size_t index)
 {
-  if (!value_arrayp(array))
+  if (!value_is_array(array))
     return NULL;
   return *(value_t **) vector_at((vector_t *) array, index);
 }
 
 void value_array_remove(value_t *array, size_t index)
 {
-  if (!value_arrayp(array))
+  if (!value_is_array(array))
     return;
   vector_erase((vector_t *) array, index, value_array_release_element);
 }
@@ -293,19 +293,19 @@ value_t *value_object(void)
   return mapd;
 }
 
-bool value_objectp(const value_t *object)
+bool value_is_object(const value_t *object)
 {
   return value_type(object) == VALUE_OBJECT;
 }
 
 size_t value_object_size(const value_t *object)
 {
-  return value_objectp(object) ? mapd_size((mapd_t *) object) : 0;
+  return value_is_object(object) ? mapd_size((mapd_t *) object) : 0;
 }
 
 void value_object_set(value_t *object, const string_t key, value_t *value)
 {
-  if (!value_objectp(object))
+  if (!value_is_object(object))
     return;
   value_object_delete(object, key);
   value_hold(value);
@@ -322,7 +322,7 @@ value_t *value_object_get(const value_t *object, const string_t key)
 {
   value_t *value;
 
-  if (!value_objectp(object))
+  if (!value_is_object(object))
     return value_undefined();
 
   value = (value_t *) mapd_at(object, key);
@@ -331,7 +331,7 @@ value_t *value_object_get(const value_t *object, const string_t key)
 
 void value_object_delete(value_t *object, const string_t key)
 {
-  if (!value_objectp(object))
+  if (!value_is_object(object))
     return;
 
   mapd_erase((mapd_t *) object, key, value_object_release_entry);

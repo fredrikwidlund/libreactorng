@@ -24,7 +24,7 @@ static bool test(const char *input)
   bool result;
 
   v = value_decode(input, &eof);
-  if (value_undefinedp(v) || *eof)
+  if (value_is_undefined(v) || *eof)
   {
     value_release(v);
     return false;
@@ -47,7 +47,7 @@ static void test_decode(__attribute__((unused)) void **arg)
     assert_false(test(reject[i]));
 
   v = value_decode("42", NULL);
-  assert_false(value_undefinedp(v));
+  assert_false(value_is_undefined(v));
   value_release(v);
 }
 
