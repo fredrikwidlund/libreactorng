@@ -30,7 +30,7 @@ void test_buffer(__attribute__((unused)) void **state)
 
   buffer_prepend(&b, data_string("first"));
   buffer_append(&b, data_string("last"));
-  buffer_insert(&b, buffer_size(&b), data_define("", 1));
+  buffer_insert(&b, buffer_size(&b), data("", 1));
   assert_string_equal(buffer_base(&b), "firstlast");
 
   buffer_erase(&b, 5, 4);
@@ -70,7 +70,7 @@ void test_buffer(__attribute__((unused)) void **state)
 
   f = tmpfile();
   buffer_construct(&b);
-  buffer_insert_fill(&b, 0, 65536, data_define("", 1));
+  buffer_insert_fill(&b, 0, 65536, data("", 1));
   buffer_write(&b, f);
   buffer_clear(&b);
   fseek(f, 0, SEEK_SET);

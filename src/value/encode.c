@@ -202,7 +202,7 @@ string_t value_encode(const value_t *value, value_encode_options_t options)
     buffer_destruct(&buffer);
     return string_null();
   }
-  buffer_append(&buffer, data_define((char[]) {0}, 1));
+  buffer_append(&buffer, data((char[]) {0}, 1));
   buffer_compact(&buffer);
   buffer_resize(&buffer, buffer_size(&buffer) - 1);
   return buffer_data(&buffer);

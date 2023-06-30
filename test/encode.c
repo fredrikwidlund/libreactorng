@@ -53,7 +53,7 @@ static void test_decode(__attribute__((unused)) void **arg)
 
 static void test_encode(__attribute__((unused)) void **arg)
 {
-  assert_true(string_nullp(value_encode(value_undefined(), 0)));
+  assert_true(string_empty(value_encode(value_undefined(), 0)));
 }
 
 static void test_encode_pretty(__attribute__((unused)) void **arg)

@@ -14,13 +14,15 @@ struct data
 
 /* constructor/destructor */
 
+data_t  data(const void *, size_t);
 data_t  data_null(void);
-data_t  data_define(const void *, size_t);
 data_t  data_string(const char *);
 data_t  data_offset(const data_t, size_t);
 data_t  data_select(const data_t, size_t);
 data_t  data_copy(const data_t);
 data_t  data_copyz(const data_t);
+data_t  data_alloc(size_t);
+data_t  data_realloc(data_t, size_t);
 void    data_release(data_t);
 
 /* capacity */

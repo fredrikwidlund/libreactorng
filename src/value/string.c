@@ -12,25 +12,24 @@ string_t string(const char *text)
   return data_string(text);
 }
 
-string_t string_define(const void *base, size_t size)
+string_t string_data(const data_t d)
 {
-  return data_define(base, size);
+  return d;
 }
 
 string_t string_null(void)
 {
-  return data_define(string_null_chars, 0);
+  return data(string_null_chars, 0);
 }
 
 string_t string_copy(const string_t string)
 {
-  return string_nullp(string) ? string_null() : data_copyz(string);
+  return data_copyz(string);
 }
 
 void string_release(const string_t string)
 {
-  if (!string_nullp(string))
-    data_release(string);
+  data_release(string);
 }
 
 /* capacity */
@@ -38,11 +37,6 @@ void string_release(const string_t string)
 size_t string_size(const string_t string)
 {
   return data_size(string);
-}
-
-bool string_nullp(string_t string)
-{
-  return string_base(string) == string_null_chars;
 }
 
 bool string_empty(const string_t string)
@@ -198,15 +192,15 @@ uint32_t string_utf8_get_encoded(const char *from, const char **end)
 void string_utf8_put(buffer_t *buffer, uint32_t code)
 {
   if (code < 0x80)
-    buffer_append(buffer, data_define((uint8_t[]) {code}, 1));
+    buffer_append(buffer, data((uint8_t[]) {code}, 1));
   else if (code < 0x800)
-    buffer_append(buffer, data_define((uint8_t[]) {0b11000000 | (code >> 6), 0b10000000 | (code & 0x3f)}, 2));
+    buffer_append(buffer, data((uint8_t[]) {0b11000000 | (code >> 6), 0b10000000 | (code & 0x3f)}, 2));
   else if (code < 0x10000)
-    buffer_append(buffer, data_define((uint8_t[]) {0b11100000 | (code >> 12), 0b10000000 | ((code >> 6) & 0x3f),
+    buffer_append(buffer, data((uint8_t[]) {0b11100000 | (code >> 12), 0b10000000 | ((code >> 6) & 0x3f),
                                                    0b10000000 | (code & 0x3f)},
                                       3));
   else
-    buffer_append(buffer, data_define((uint8_t[]) {0b11110000 | (code >> 18), 0b10000000 | ((code >> 12) & 0x3f),
+    buffer_append(buffer, data((uint8_t[]) {0b11110000 | (code >> 18), 0b10000000 | ((code >> 12) & 0x3f),
                                                    0b10000000 | ((code >> 6) & 0x3f), 0b10000000 | (code & 0x3f)},
                                       4));
 }
@@ -216,7 +210,7 @@ void string_utf8_put_encoded_basic(buffer_t *buffer, uint16_t code)
   static const char map[16] = "0123456789abcdef";
   char s[6] = {'\\', 'u', map[code >> 12], map[(code >> 8) & 0x0f], map[(code >> 4) & 0x0f], map[code & 0x0f]};
 
-  buffer_append(buffer, data_define(s, sizeof s));
+  buffer_append(buffer, data(s, sizeof s));
 }
 
 void string_utf8_put_encoded(buffer_t *buffer, uint32_t code)
@@ -247,7 +241,7 @@ bool string_utf8_encode(buffer_t *buffer, const string_t utf8_string, bool ascii
       p++;
       while (p < p_end && string_utf8_regular(*p))
         p++;
-      buffer_append(buffer, data_define(p_old, p - p_old));
+      buffer_append(buffer, data(p_old, p - p_old));
     }
     else if ((unsigned char) *p >= 0x80)
     {
@@ -304,7 +298,7 @@ string_t string_utf8_decode(const char *from, const char **end)
       p++;
       while (string_utf8_regular(*p))
         p++;
-      buffer_append(&buffer, data_define(p_old, p - p_old));
+      buffer_append(&buffer, data(p_old, p - p_old));
     }
     else if ((unsigned char) *p >= 0x80)
     {
@@ -358,12 +352,7 @@ string_t string_utf8_decode(const char *from, const char **end)
 
   if (end)
     *end = p;
-  if (buffer_empty(&buffer))
-  {
-    buffer_destruct(&buffer);
-    return string_null();
-  }
-  buffer_append(&buffer, data_define("", 1));
+  buffer_append(&buffer, data("", 1));
   buffer_compact(&buffer);
   buffer_resize(&buffer, buffer_size(&buffer) - 1);
   return buffer_data(&buffer);

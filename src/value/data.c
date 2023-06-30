@@ -27,88 +27,97 @@ static int memcasecmp(const void *vs1, const void *vs2, size_t n)
   return 0;
 }
 
+data_t data(const void *base, size_t size)
+{
+  return (data_t) {.iov.iov_base = (void *) base, .iov.iov_len = size};
+}
+
 data_t data_null(void)
 {
   return (data_t) {0};
 }
 
-data_t data_define(const void *base, size_t size)
-{
-  return (data_t) {.iov.iov_base = (void *) base, .iov.iov_len = size};
-}
-
 data_t data_string(const char *chars)
 {
-  return data_define(chars, strlen(chars));
+  return data(chars, strlen(chars));
 }
 
-data_t data_offset(const data_t data, size_t offset)
+data_t data_offset(const data_t d, size_t offset)
 {
-  return data_define((char *) data_base(data) + offset, data_size(data) - offset);
+  return data((char *) data_base(d) + offset, data_size(d) - offset);
 }
 
-data_t data_select(const data_t data, size_t size)
+data_t data_select(const data_t d, size_t size)
 {
-  return data_define(data_base(data), size);
+  return data(data_base(d), size);
 }
 
 data_t data_copy(const data_t from)
 {
-  data_t to = data_define(malloc(data_size(from)), data_size(from));
+  data_t to;
+
+  to = data(malloc(data_size(from)), data_size(from));
   memcpy(data_base(to), data_base(from), data_size(from));
   return to;
 }
 
 data_t data_copyz(const data_t from)
 {
-  data_t to = data_define(malloc(data_size(from) + 1), data_size(from));
+  data_t to;
+
+  to = data(malloc(data_size(from) + 1), data_size(from));
   memcpy(data_base(to), data_base(from), data_size(from));
   *(char *) data_end(to) = 0;
   return to;
 }
 
-void data_release(data_t data)
+data_t data_alloc(size_t size)
 {
-  free(data_base(data));
+  return data(calloc(1, size), size);
+}
+
+data_t data_realloc(data_t d, size_t size)
+{
+  return data(realloc(data_base(d), size), size);
+}
+
+void data_release(data_t d)
+{
+  free(data_base(d));
 }
 
 /* capacity */
 
-size_t data_size(const data_t data)
+size_t data_size(const data_t d)
 {
-  return data.iov.iov_len;
+  return d.iov.iov_len;
 }
 
-bool data_empty(const data_t data)
+bool data_empty(const data_t d)
 {
-  return data_size(data) == 0;
-}
-
-bool data_nullp(const data_t data)
-{
-  return data.iov.iov_base == NULL;
+  return data_size(d) == 0;
 }
 
 /* element access */
 
-void *data_base(const data_t data)
+void *data_base(const data_t d)
 {
-  return data.iov.iov_base;
+  return d.iov.iov_base;
 }
 
-void *data_end(const data_t data)
+void *data_end(const data_t d)
 {
-  return (char *) data_base(data) + data_size(data);
+  return (char *) data_base(d) + data_size(d);
 }
 
 /* operations */
 
-bool data_equal(const data_t data1, const data_t data2)
+bool data_equal(const data_t d1, const data_t d2)
 {
-  return data_size(data1) == data_size(data2) && memcmp(data_base(data1), data_base(data2), data_size(data1)) == 0;
+  return data_size(d1) == data_size(d2) && memcmp(data_base(d1), data_base(d2), data_size(d1)) == 0;
 }
 
-bool data_equal_case(const data_t data1, const data_t data2)
+bool data_equal_case(const data_t d1, const data_t d2)
 {
-  return data_size(data1) == data_size(data2) && memcasecmp(data_base(data1), data_base(data2), data_size(data1)) == 0;
+  return data_size(d1) == data_size(d2) && memcasecmp(data_base(d1), data_base(d2), data_size(d1)) == 0;
 }

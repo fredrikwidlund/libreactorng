@@ -90,7 +90,7 @@ extern const char VALUE_OBJECT[];
   if (value_objectp(object))                                                                                 \
     for (size_t __value_iter = 0; __value_iter < ((mapd_t *) object)->map.elements_capacity; __value_iter++) \
       if ((value) = (value_t *) ((mapd_entry_t *)((mapd_t *) (object))->map.elements)[__value_iter].value,   \
-          !data_nullp((key) = ((mapd_entry_t *)((mapd_t *) (object))->map.elements)[__value_iter].key))
+          data_base((key) = ((mapd_entry_t *)((mapd_t *) (object))->map.elements)[__value_iter].key) != NULL)
 
 value_t     *value_object(void);
 bool         value_objectp(const value_t *);

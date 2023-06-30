@@ -16,7 +16,7 @@ static int equal(const void *p1, const void *p2)
 {
   const mapd_entry_t *a = p1, *b = p2;
 
-  return b ? data_equal(a->key, b->key) : data_nullp(a->key);
+  return b ? data_equal(a->key, b->key) : data_base(a->key) == NULL;
 }
 
 static size_t hash(const void *p)

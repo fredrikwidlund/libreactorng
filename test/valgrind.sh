@@ -2,7 +2,6 @@
 
 if command -v valgrind; then
     for file in include data hash buffer list vector map mapi maps mapd string value encode
-#    for file in include data hash buffer list vector map mapi maps mapd string value encode
     do
         echo [$file]
         if ! valgrind --track-fds=yes --error-exitcode=1 --leak-check=full --show-leak-kinds=all test/$file; then

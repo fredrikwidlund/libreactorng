@@ -9,7 +9,7 @@ typedef data_t string_t;
 /* constructor/destructor */
 
 string_t  string(const char *);
-string_t  string_define(const void *, size_t);
+string_t  string_data(const data_t);
 string_t  string_null(void);
 string_t  string_copy(const string_t);
 void      string_release(string_t);
@@ -17,7 +17,6 @@ void      string_release(string_t);
 /* capacity */
 
 size_t    string_size(const string_t);
-bool      string_nullp(string_t);
 bool      string_empty(string_t);
 
 /* element access */
