@@ -17,7 +17,8 @@ int main()
 
   buffer_construct(&b);
   buffer_load(&b, "/etc/motd");
-  buffer_append(&b, data_string("add some noise...\n"));
+  buffer_prepend(&b, data_string("--- first line ---\n"));
+  buffer_append(&b, data_string("--- last line ---\n"));
   buffer_save(&b, "/tmp/motd");
   buffer_destruct(&b);
 }
