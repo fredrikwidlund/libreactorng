@@ -21,8 +21,7 @@ int main()
 {
   data_t d = data_string("compiled with \"-flto -O2\" this application will not call strlen() later down the call stack\n");
   out(d);
-}
-                                                                                                                                                    ```
+}                                                                                                                                                    ```
 ```
 
 ### Buffers
