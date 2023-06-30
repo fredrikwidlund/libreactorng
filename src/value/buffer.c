@@ -114,6 +114,11 @@ void buffer_insert_fill(buffer_t *restrict buffer, size_t pos, size_t count, con
   buffer_resize(buffer, buffer_size(buffer) + (count * data_size(data)));
 }
 
+void buffer_prepend(buffer_t *restrict buffer, const data_t data)
+{
+  buffer_insert(buffer, 0, data);
+}
+
 void buffer_append(buffer_t *restrict buffer, const data_t data)
 {
   buffer_insert(buffer, buffer_size(buffer), data);

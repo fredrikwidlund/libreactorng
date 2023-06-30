@@ -35,6 +35,7 @@ data_t  buffer_allocate(buffer_t *, size_t);
 
 void    buffer_insert(buffer_t *restrict, size_t, const data_t);
 void    buffer_insert_fill(buffer_t *restrict, size_t, size_t, const data_t);
+void    buffer_prepend(buffer_t *restrict, const data_t);
 void    buffer_append(buffer_t *restrict, const data_t);
 void    buffer_erase(buffer_t *restrict, size_t, size_t);
 void    buffer_clear(buffer_t *);

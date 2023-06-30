@@ -28,8 +28,8 @@ void test_buffer(__attribute__((unused)) void **state)
   buffer_compact(&b);
   assert_int_equal(buffer_capacity(&b), 0);
 
-  buffer_insert(&b, 0, data_string("last"));
-  buffer_insert(&b, 0, data_string("first"));
+  buffer_prepend(&b, data_string("first"));
+  buffer_append(&b, data_string("last"));
   buffer_insert(&b, buffer_size(&b), data_define("", 1));
   assert_string_equal(buffer_base(&b), "firstlast");
 
