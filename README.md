@@ -9,11 +9,43 @@ libreactor is a [high performance](#performance), robust and secure, generic eve
 
 ## Key Features
 
-- Data types such as [data vectors](#data-vectors), [buffers](#buffers), lists, hash tables, dynamic arrays, UTF-8 strings, JSON values (including RFC 8259 compliant serialization), and more
+- Data types such as [data vectors](#data-vectors), [buffers](#buffers), lists, hash tables, dynamic arrays, UTF-8 strings, JSON values (including RFC 8259 compliant serialization)
 - Low level io_uring abstrations
 - High level event abstrations
 - Message queues
 - Declarative graph based data flow application framework
+
+## Installation
+
+``` sh
+git clone https://github.com/fredrikwidlund/libreactorng.git
+cd libreactorng/
+./autogen.sh
+./configure
+make && sudo make install
+```
+
+## Usage
+
+```sh
+cat > main.c <<EOF
+#include <reactor.h>
+
+int main()
+{
+  buffer_t b;
+
+  buffer_construct(&b);
+  buffer_load(&b, "/etc/motd");
+  buffer_prepend(&b, data_string("--- first line ---\n"));
+  buffer_append(&b, data_string("--- last line ---\n"));
+  buffer_save(&b, "/tmp/motd");
+  buffer_destruct(&b);
+}
+EOF
+gcc -Wall -o main main.c `pkg-config --libs --cflags libreactor`
+./main
+```
 
 ## Performance
 
@@ -22,6 +54,8 @@ libreactor is a [high performance](#performance), robust and secure, generic eve
 ## Security
 
 ...
+
+
 
 ## Data types
 
