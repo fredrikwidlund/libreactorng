@@ -1,4 +1,4 @@
-#include <value.h>
+#include <reactor.h>
 
 typedef struct context context_t;
 
@@ -66,17 +66,17 @@ __attribute__((flatten)) bool value_buffer_encode(buffer_t *buffer, const value_
     switch (state_old)
     {
     case STATE_VALUE_START:
-      if (value_nullp(value))
+      if (value_is_null(value))
         state = STATE_NULL;
-      else if (value_boolp(value))
+      else if (value_is_bool(value))
         state = STATE_BOOL;
-      else if (value_numberp(value))
+      else if (value_is_number(value))
         state = STATE_NUMBER;
-      else if (value_stringp(value))
+      else if (value_is_string(value))
         state = STATE_STRING;
-      else if (value_objectp(value))
+      else if (value_is_object(value))
         state = STATE_OBJECT_FIRST;
-      else if (value_arrayp(value))
+      else if (value_is_array(value))
         state = STATE_ARRAY_FIRST;
       break;
     case STATE_VALUE_END:

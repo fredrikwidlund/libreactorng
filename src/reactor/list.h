@@ -1,8 +1,8 @@
-#ifndef VALUE_LIST_H_INCLUDED
-#define VALUE_LIST_H_INCLUDED
+#ifndef REACTOR_LIST_H_INCLUDED
+#define REACTOR_LIST_H_INCLUDED
 
 #include <stdlib.h>
-#include <value.h>
+#include <reactor.h>
 
 #define list_foreach(l, o)         for ((o) = list_front(l); (o) != list_end(l); (o) = list_next(o))
 #define list_foreach_reverse(l, o) for ((o) = list_back(l); (o) != list_end(l); (o) = list_previous(o))
@@ -51,4 +51,4 @@ void    list_clear(list_t *, list_release_t *);
 /* operations */
 void   *list_find(const list_t *, list_compare_t *, const void *);
 
-#endif /* VALUE_LIST_H_INCLUDED */
+#endif /* REACTOR_LIST_H_INCLUDED */

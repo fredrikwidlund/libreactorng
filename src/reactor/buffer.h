@@ -1,11 +1,11 @@
-#ifndef VALUE_BUFFER_H_INCLUDED
-#define VALUE_BUFFER_H_INCLUDED
+#ifndef REACTOR_BUFFER_H_INCLUDED
+#define REACTOR_BUFFER_H_INCLUDED
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <sys/uio.h>
-#include <value.h>
+#include <reactor.h>
 
 typedef struct buffer buffer_t;
 
@@ -55,4 +55,4 @@ void   *buffer_end(const buffer_t *);
 void    buffer_write(const buffer_t *restrict, FILE *restrict);
 bool    buffer_save(const buffer_t *restrict, const char *);
 
-#endif /* VALUE_BUFFER_H_INCLUDED */
+#endif /* REACTOR_BUFFER_H_INCLUDED */

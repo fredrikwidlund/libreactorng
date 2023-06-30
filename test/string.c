@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cmocka.h>
-
-#include <value.h>
+#include <reactor.h>
 
 static void test_string(__attribute__((unused)) void **arg)
 {

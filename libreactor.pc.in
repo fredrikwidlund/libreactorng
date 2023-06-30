@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=${prefix}/include
+
+Name: libreactor
+Description: high performance, robust and secure, generic event-driven application framework
+Version: @VERSION@
+Libs: -L${libdir} -lreactor
+Cflags: -I${includedir} -flto

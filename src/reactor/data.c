@@ -4,7 +4,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <limits.h>
-#include <value.h>
+#include <reactor.h>
 
 /* memcasecmp from gnulib */
 

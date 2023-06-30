@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cmocka.h>
-
-#include <value.h>
+#include <reactor.h>
 
 static char *accept[] = {"42",     "-1e2",
                          "[-1e0]", "1.0E+2",

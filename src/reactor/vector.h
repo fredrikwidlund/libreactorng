@@ -1,9 +1,9 @@
-#ifndef VALUE_VECTOR_H_INCLUDED
-#define VALUE_VECTOR_H_INCLUDED
+#ifndef REACTOR_VECTOR_H_INCLUDED
+#define REACTOR_VECTOR_H_INCLUDED
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include <value.h>
+#include <reactor.h>
 
 typedef struct vector vector_t;
 typedef void          vector_release_t(void *);
@@ -50,4 +50,4 @@ void    vector_clear(vector_t *, vector_release_t *);
 
 void    vector_sort(vector_t *, vector_compare_t *);
 
-#endif /* VALUE_VECTOR_H_INCLUDED */
+#endif /* REACTOR_VECTOR_H_INCLUDED */

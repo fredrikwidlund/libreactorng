@@ -1,5 +1,5 @@
-#ifndef VALUE_DATA_H_INCLUDED
-#define VALUE_DATA_H_INCLUDED
+#ifndef REACTOR_DATA_H_INCLUDED
+#define REACTOR_DATA_H_INCLUDED
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -40,4 +40,4 @@ void   *data_end(const data_t);
 bool    data_equal(const data_t, const data_t);
 bool    data_equal_case(const data_t, const data_t);
 
-#endif /* VALUE_DATA_H_INCLUDED */
+#endif /* REACTOR_DATA_H_INCLUDED */

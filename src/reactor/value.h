@@ -1,5 +1,5 @@
-#ifndef VALUE_VALUE_H_INCLUDED
-#define VALUE_VALUE_H_INCLUDED
+#ifndef REACTOR_VALUE_H_INCLUDED
+#define REACTOR_VALUE_H_INCLUDED
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -101,4 +101,4 @@ value_t     *value_object_get(const value_t *, const string_t);
 void         value_object_delete(value_t *, const string_t);
 value_t     *value_object_keys(const value_t *);
 
-#endif /* VALUE_VALUE_H_INCLUDED */
+#endif /* REACTOR_VALUE_H_INCLUDED */

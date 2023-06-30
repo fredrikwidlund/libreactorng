@@ -1,5 +1,5 @@
-#ifndef VALUE_MAP_H_INCLUDED
-#define VALUE_MAP_H_INCLUDED
+#ifndef REACTOR_MAP_H_INCLUDED
+#define REACTOR_MAP_H_INCLUDED
 
 #ifndef MAP_ELEMENTS_CAPACITY_MIN
 #define MAP_ELEMENTS_CAPACITY_MIN 8
@@ -39,4 +39,4 @@ void    map_insert(map_t *, void *, map_hash_t *, map_set_t *, map_equal_t *, ma
 void    map_erase(map_t *, const void *,  map_hash_t *, map_set_t *, map_equal_t *, map_release_t *);
 void    map_clear(map_t *, map_set_t *, map_equal_t *, map_release_t *);
 
-#endif /* VALUE_MAP_H_INCLUDED */
+#endif /* REACTOR_MAP_H_INCLUDED */

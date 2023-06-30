@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cmocka.h>
-#include <value.h>
+#include <reactor.h>
 
 static void counter_destroy(void *object)
 {

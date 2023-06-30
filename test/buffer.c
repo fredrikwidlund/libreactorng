@@ -2,8 +2,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <cmocka.h>
-
-#include <value.h>
+#include <reactor.h>
 
 void test_buffer(__attribute__((unused)) void **state)
 {

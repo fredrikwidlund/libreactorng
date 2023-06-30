@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <setjmp.h>
 #include <cmocka.h>
-#include <value.h>
+#include <reactor.h>
 
 static void set(void *p1, const void *p2)
 {
