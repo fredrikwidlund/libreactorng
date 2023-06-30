@@ -4,8 +4,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include <cmocka.h>
-
-#include <value.h>
+#include <reactor.h>
 
 static void release(void *object)
 {

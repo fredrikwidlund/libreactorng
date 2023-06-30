@@ -1,5 +1,5 @@
-#ifndef VALUE_STRING_H_INCLUDED
-#define VALUE_STRING_H_INCLUDED
+#ifndef REACTOR_STRING_H_INCLUDED
+#define REACTOR_STRING_H_INCLUDED
 
 #include <stdlib.h>
 #include <stdbool.h>
@@ -9,7 +9,7 @@ typedef data_t string_t;
 /* constructor/destructor */
 
 string_t  string(const char *);
-string_t  string_define(const void *, size_t);
+string_t  string_data(const data_t);
 string_t  string_null(void);
 string_t  string_copy(const string_t);
 void      string_release(string_t);
@@ -17,7 +17,6 @@ void      string_release(string_t);
 /* capacity */
 
 size_t    string_size(const string_t);
-bool      string_nullp(string_t);
 bool      string_empty(string_t);
 
 /* element access */
@@ -40,4 +39,4 @@ void      string_utf8_put_encoded(buffer_t *, uint32_t);
 bool      string_utf8_encode(buffer_t *, const string_t, bool);
 string_t  string_utf8_decode(const char *, const char **);
 
-#endif /* VALUE_STRING_H_INCLUDED */
+#endif /* REACTOR_STRING_H_INCLUDED */

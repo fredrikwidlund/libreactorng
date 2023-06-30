@@ -1,5 +1,5 @@
-#ifndef VALUE_MAPI_H_INCLUDED
-#define VALUE_MAPI_H_INCLUDED
+#ifndef REACTOR_MAPI_H_INCLUDED
+#define REACTOR_MAPI_H_INCLUDED
 
 #define mapi_foreach(m, e) \
   for ((e) = (m)->map.elements; (e) != ((mapi_entry *) (m)->map.elements) + (m)->map.elements_capacity; (e) ++) \
@@ -40,4 +40,4 @@ void      mapi_insert(mapi_t *, uintptr_t, uintptr_t, mapi_release_t *);
 void      mapi_erase(mapi_t *, uintptr_t, mapi_release_t *);
 void      mapi_clear(mapi_t *, mapi_release_t *);
 
-#endif /* VALUE_MAPI_H_INCLUDED */
+#endif /* REACTOR_MAPI_H_INCLUDED */

@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cmocka.h>
-
-#include <value.h>
+#include <reactor.h>
 
 static void test_data(__attribute__((unused)) void **arg)
 {
@@ -32,6 +31,11 @@ static void test_data(__attribute__((unused)) void **arg)
   d2 = data_copyz(d);
   assert_true(data_equal(d, d2));
   data_release(d2);
+
+  d = data_alloc(42);
+  d = data_realloc(d, 4711);
+  assert_int_equal(data_size(d), 4711);
+  data_release(d);
 }
 
 int main()

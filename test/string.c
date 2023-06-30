@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cmocka.h>
-
-#include <value.h>
+#include <reactor.h>
 
 static void test_string(__attribute__((unused)) void **arg)
 {
@@ -13,12 +12,11 @@ static void test_string(__attribute__((unused)) void **arg)
 
   /* basic */
   s = "test";
-  s1 = string_define(s, strlen(s));
+  s1 = string_data(data(s, strlen(s)));
   assert_true(string_equal(s1, string("test")));
 
-  s1 = string_null();;
+  s1 = string_null();
   assert_int_equal(string_utf8_length(s1), 0);
-  string_release(s1);
 
   /* basic utf8 */
   s1 = string_utf8_decode("\xE2\x98\x83", &end);
@@ -135,20 +133,20 @@ static void test_string(__attribute__((unused)) void **arg)
   string_release(s2);
 
   s1 = string_utf8_decode("", NULL);
-  assert_true(string_nullp(s1));
+  assert_true(string_empty(s1));
   string_release(s1);
 
   /* string_utf8_encode */
   buffer_t b;
   buffer_construct(&b);
   assert_true(string_utf8_encode(&b, string("abc\xE2\x98\x83\"\\\f\n\r\t\x01"), true));
-  buffer_append(&b, data_define((char[]) {0}, 1));
+  buffer_append(&b, data((char[]) {0}, 1));
   assert_string_equal("abc\\u2603\\\"\\\\\\f\\n\\r\\t\\u0001", (char *) buffer_base(&b));
 
   buffer_clear(&b);
 
   assert_true(string_utf8_encode(&b, string("abc\xE2\x98\x83\"\\\f\n\r\t\x01"), false));
-  buffer_append(&b, data_define((char[]) {0}, 1));
+  buffer_append(&b, data((char[]) {0}, 1));
   assert_string_equal("abc\xE2\x98\x83\\\"\\\\\\f\\n\\r\\t\\u0001", (char *) buffer_base(&b));
 
   buffer_clear(&b);
@@ -162,12 +160,11 @@ static void test_string(__attribute__((unused)) void **arg)
   /* clear null */
   s1 = string_null();
   assert_int_equal(string_utf8_length(s1), 0);
-  string_release(s1);
 
   /* copy */
   s1 = string_null();
   s2 = string_copy(s1);
-  assert_true(string_nullp(s2));
+  assert_true(string_empty(s2));
   string_release(s2);
 
   s1 = string("test");

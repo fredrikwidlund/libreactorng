@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <value.h>
+#include <reactor.h>
 
 /* constructor/destructor */
 
@@ -70,17 +70,17 @@ void *vector_base(const vector_t *vector)
 
 void vector_insert(vector_t *vector, size_t position, const void *object)
 {
-  buffer_insert(&vector->buffer, position * vector->object_size, data_define(object, vector->object_size));
+  buffer_insert(&vector->buffer, position * vector->object_size, data(object, vector->object_size));
 }
 
 void vector_insert_range(vector_t *vector, size_t position, const void *first, const void *last)
 {
-  buffer_insert(&vector->buffer, position * vector->object_size, data_define(first, (char *) last - (char *) first));
+  buffer_insert(&vector->buffer, position * vector->object_size, data(first, (char *) last - (char *) first));
 }
 
 void vector_insert_fill(vector_t *vector, size_t position, size_t count, const void *object)
 {
-  buffer_insert_fill(&vector->buffer, position * vector->object_size, count, data_define(object, vector->object_size));
+  buffer_insert_fill(&vector->buffer, position * vector->object_size, count, data(object, vector->object_size));
 }
 
 void vector_erase(vector_t *vector, size_t position, vector_release_t *release)
@@ -110,7 +110,7 @@ void vector_clear(vector_t *vector, vector_release_t *release)
 
 void vector_push_back(vector_t *vector, const void *object)
 {
-  buffer_insert(&vector->buffer, buffer_size(&vector->buffer), data_define(object, vector->object_size));
+  buffer_insert(&vector->buffer, buffer_size(&vector->buffer), data(object, vector->object_size));
 }
 
 void vector_pop_back(vector_t *vector, vector_release_t *release)

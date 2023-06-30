@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <setjmp.h>
 #include <cmocka.h>
-#include <value.h>
+#include <reactor.h>
 
 static void release(maps_entry_t *e)
 {

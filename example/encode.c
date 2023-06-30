@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
-#include <value.h>
+#include <reactor.h>
 
 static value_t *encapsulate(value_t *object)
 {
@@ -31,14 +31,14 @@ int main()
   s = value_encode(v, 0);
   t2 = ntime();
   value_release(v);
-  printf("%d '%s'\n", string_nullp(s), string_base(s));
+  printf("%d '%s'\n", string_empty(s), string_base(s));
   printf("time %f\n", ((double) t2 - t1) / 1000000000.);
   string_release(s);
 
   v = value_undefined();
   s = value_encode(v, 0);
   value_release(v);
-  printf("%d '%s'\n", string_nullp(s), string_base(s));
+  printf("%d '%s'\n", string_empty(s), string_base(s));
   string_release(s);
 
   const char p[] = "string, basic: \xE2\x98\x83, supp: \U0001F600, zero: \x00, control \t\t.end";
@@ -51,7 +51,7 @@ int main()
   v2 = value_array();
   value_array_append_release(v2, value_bool(false));
   value_array_append_release(v2, value_bool(true));
-  value_array_append_release(v2, value_string(string_define(p, sizeof p - 1)));
+  value_array_append_release(v2, value_string(data(p, sizeof p - 1)));
   value_array_append_release(v2, value_number(42));
   v = value_object();
   value_object_set_release(v, string("test"), v2);

@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <setjmp.h>
 #include <cmocka.h>
-#include <value.h>
+#include <reactor.h>
 
 void test_mapi(__attribute__((unused)) void **state)
 {

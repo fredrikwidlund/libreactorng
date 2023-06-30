@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <value.h>
+#include <reactor.h>
 
 static size_t buffer_roundup(size_t size)
 {
@@ -58,7 +58,7 @@ void buffer_reserve(buffer_t *buffer, size_t capacity)
   if (capacity > buffer->capacity)
   {
     capacity = buffer_roundup(capacity);
-    buffer->data = data_define(realloc(buffer_base(buffer), capacity), buffer_size(buffer));
+    buffer->data = data(realloc(buffer_base(buffer), capacity), buffer_size(buffer));
     buffer->capacity = capacity;
   }
 }
@@ -77,7 +77,7 @@ void buffer_compact(buffer_t *buffer)
   size = buffer_size(buffer);
   if (buffer->capacity > size)
   {
-    buffer->data = data_define(realloc(buffer_base(buffer), size), size);
+    buffer->data = data(realloc(buffer_base(buffer), size), size);
     buffer->capacity = size;
   }
 }
@@ -169,7 +169,7 @@ bool buffer_loadz(buffer_t *restrict buffer, const char *path)
     return false;
   buffer_clear(buffer);
   buffer_read(buffer, file);
-  buffer_append(buffer, data_define("", 1));
+  buffer_append(buffer, data("", 1));
   buffer_compact(buffer);
   buffer_resize(buffer, buffer_size(buffer) - 1);
   fclose(file);

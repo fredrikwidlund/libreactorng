@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cmocka.h>
-
-#include <value.h>
+#include <reactor.h>
 
 static char *accept[] = {"42",     "-1e2",
                          "[-1e0]", "1.0E+2",
@@ -24,7 +23,7 @@ static bool test(const char *input)
   bool result;
 
   v = value_decode(input, &eof);
-  if (value_undefinedp(v) || *eof)
+  if (value_is_undefined(v) || *eof)
   {
     value_release(v);
     return false;
@@ -47,13 +46,13 @@ static void test_decode(__attribute__((unused)) void **arg)
     assert_false(test(reject[i]));
 
   v = value_decode("42", NULL);
-  assert_false(value_undefinedp(v));
+  assert_false(value_is_undefined(v));
   value_release(v);
 }
 
 static void test_encode(__attribute__((unused)) void **arg)
 {
-  assert_true(string_nullp(value_encode(value_undefined(), 0)));
+  assert_true(string_empty(value_encode(value_undefined(), 0)));
 }
 
 static void test_encode_pretty(__attribute__((unused)) void **arg)

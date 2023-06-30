@@ -1,7 +1,7 @@
 #include <string.h>
 #include <errno.h>
 #include <ctype.h>
-#include <value.h>
+#include <reactor.h>
 
 enum state
 {
@@ -184,7 +184,7 @@ value_t *value_decode(const char *from, const char **end)
       };
       break;
     case STATE_VALUE_END:
-      if (value_undefinedp(value))
+      if (value_is_undefined(value))
         state = STATE_REJECT;
       else if (vector_empty(&stack))
         state = STATE_ACCEPT;
@@ -226,7 +226,7 @@ value_t *value_decode(const char *from, const char **end)
       if (vector_empty(&stack))
         break;
       parent = *(value_t **) vector_back(&stack);
-      if (value_arrayp(parent) && value_array_length(parent) == 0)
+      if (value_is_array(parent) && value_array_length(parent) == 0)
         state = STATE_ARRAY_END;
       break;
     case STATE_ARRAY_END:
@@ -263,7 +263,7 @@ value_t *value_decode(const char *from, const char **end)
       if (vector_empty(&stack))
         break;
       parent = *(value_t **) vector_back(&stack);
-      if (value_objectp(parent) && value_object_size(parent) == 0)
+      if (value_is_object(parent) && value_object_size(parent) == 0)
         state = STATE_OBJECT_END;
       break;
     case STATE_OBJECT_END:
@@ -276,19 +276,19 @@ value_t *value_decode(const char *from, const char **end)
       break;
     case STATE_REDUCE:
       parent = *(value_t **) vector_back(&stack);
-      if (value_arrayp(parent))
+      if (value_is_array(parent))
       {
         value_array_append_release(parent, value);
         value = value_undefined();
         state = STATE_ARRAY_REST;
       }
-      else if (value_objectp(parent) && value_stringp(value))
+      else if (value_is_object(parent) && value_is_string(value))
       {
         vector_push_back(&stack, &value);
         value = value_undefined();
         state = STATE_OBJECT_MAP;
       }
-      else if (value_stringp(parent))
+      else if (value_is_string(parent))
       {
         key = parent;
         vector_pop_back(&stack, NULL);
