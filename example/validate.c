@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <err.h>
-#include <value.h>
+#include <reactor.h>
 
 int main(int argc, char **argv)
 {
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     err(1, "buffer_loadz");
 
   value = value_decode(buffer_base(&buffer), &end);
-  if (value_undefinedp(value) || end != (char *) buffer_base(&buffer) + buffer_size(&buffer))
+  if (value_is_undefined(value) || end != (char *) buffer_base(&buffer) + buffer_size(&buffer))
   {
     buffer_destruct(&buffer);
     value_release(value);
