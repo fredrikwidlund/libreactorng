@@ -21,7 +21,7 @@ The current version of libreactor is completely refactored to use the Linux kern
 
 ## Security
 
-The libreactor pipeline is built with tests that require 100% line coverage, and 100% branch coverage (which probably in itself indicates an OCD-diagnosis), to succeed. The above tests also are done using Valgrind to ensure memory management hygiene. 
+The libreactor pipeline is built with unit-tests that require 100% line coverage, and 100% branch coverage (the latter probably in itself indicates an OCD-diagnosis) to succeed. The above tests are also completed using Valgrind to ensure memory management hygiene. 
 
 ## Installation
 
