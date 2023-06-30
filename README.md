@@ -15,6 +15,14 @@ libreactor is a [high performance](#performance), robust and secure, generic eve
 - Message queues
 - Declarative graph based data flow application framework
 
+## Performance
+
+The current version of libreactor is completely refactored to use the Linux kernel io_uring system call interface, achieving a clear performance jump from the previous epoll()-based version that has been a top contender of the [Techempower benchmark](https://www.techempower.com/benchmarks/#section=data-r21&test=json) for many years (the benchmark is in itself flawed in many ways but should still give an indication of performance potential).
+
+## Security
+
+The libreactor pipeline is built with tests that require 100% line coverage, and 100% branch coverage (which probably in itself indicates an OCD-diagnosis), to succeed. The above tests also are done using Valgrind to ensure memory management hygiene. 
+
 ## Installation
 
 ``` sh
@@ -46,15 +54,6 @@ EOF
 gcc -Wall -o main main.c `pkg-config --libs --cflags libreactor`
 ./main
 ```
-
-## Performance
-
-...
-
-## Security
-
-...
-
 
 
 ## Data types
