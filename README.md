@@ -9,12 +9,11 @@ libreactor is a [high performance](#performance), robust and secure, generic eve
 
 ## Key Features
 
-- Data types such as [buffers](doc/types.md#buffers), lists, hash tables, vectors, utf8 encoded strings, JSON values (including RFC 8259 compliant serialization)
+- Data types such as data vectors, [buffers](doc/types.md#buffers), lists, hash tables, dynamic arrays, UTF-8 strings, JSON values (including RFC 8259 compliant serialization), and more
 - Low level io_uring abstrations
 - High level event abstrations
 - Message queues
-- Declarative graph based data flow
-- and more...
+- Declarative graph based data flow application framework
 
 ## Performance
 
