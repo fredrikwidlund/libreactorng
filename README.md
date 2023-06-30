@@ -60,7 +60,7 @@ gcc -Wall -o main main.c `pkg-config --libs --cflags libreactor`
 
 ### Data vectors
 
-Data vectors are static data containers reducing the need for the common use case of handling separate variables for pointers and size. Data vectors also remove the need for zero-terminated strings, and help reduce strlen() runtime usage.
+Data vectors are generic data containers reducing the need for the common use case of handling separate variables for pointers and size. Data vectors also remove the need for zero-terminated strings, and help reduce strlen() runtime usage.
 
 #### Example
 
