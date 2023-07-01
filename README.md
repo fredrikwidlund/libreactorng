@@ -1,7 +1,7 @@
 ![CodeQL](https://github.com/fredrikwidlund/libreactorng/actions/workflows/codeql.yml/badge.svg)
 ![Build](https://github.com/fredrikwidlund/libreactorng/actions/workflows/c-cpp.yml/badge.svg)
 
-# ![](https://github.com/fredrikwidlund/libreactorng/assets/2116262/ecf3a17c-86fd-4dcc-909c-0f99a24466c9) libreactor
+# ![](https://github.com/fredrikwidlund/libreactorng/assets/2116262/834b278c-23e2-4688-a312-23ba965dba01) libreactor
 
 ## About
 
