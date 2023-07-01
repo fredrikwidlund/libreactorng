@@ -25,7 +25,7 @@ A fast framework can help you achieve performance, but it can not replace the ne
 
 The libreactor pipeline is built with unit-tests that require 100% line coverage, and 100% branch coverage (the latter probably in itself indicates an OCD-diagnosis) to succeed. The above tests are also completed using Valgrind to ensure memory management hygiene. Static analysis is done using CodeQL.
 
-Although this is a refactored version of libreactor, the previous version has been running in production as web API servers 24/7/365 for almost 10 years serving many millions of unique end-users, at consistently very high RPS rates, with perfect availability. Since there are few moving parts, no real dependencies, and the kernel API is very stable (perhaps less so with io_uring) change management is typically very simple. 
+Although this is a refactored version of libreactor, the previous version has been running in production as web API servers 24/7/365 for almost 10 years serving many millions of unique end-users, at consistently very high RPS rates, actually with perfect availability so far. Since there are few moving parts, no real dependencies, and the kernel API is very stable (perhaps less so with io_uring) change management is typically very simple. 
 
 ## Installation
 
