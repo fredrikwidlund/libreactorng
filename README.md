@@ -9,7 +9,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 
 ## Key Features
 
-- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), hash tables, dynamic arrays, UTF-8 strings, JSON values (including RFC 8259 compliant serialization)
+- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), hash tables, [dynamic arrays](#vectors), UTF-8 strings, JSON values (including RFC 8259 compliant serialization)
 - Low level io_uring abstrations
 - High level event abstrations
 - Message queues
@@ -108,7 +108,7 @@ int main()
 
 ### lists
 
-Lists are doubly linked sequence containers with O(1) inserts (given a known position) and deletes.
+Lists are doubly linked sequence containers, similar to C++ std::list, with O(1) inserts (given a known position) and deletes.
 
 #### Example
 
@@ -146,4 +146,36 @@ int main()
     printf("%d\n", *p);                                                                                                 
   list_destruct(&l, NULL);                                                                                              
 }                                                                                                                       
+```
+
+### vectors
+
+Vectors are dynamically resized arrays, similar to C++ std::vector, with O(1) random access, and O(1) inserts and removals at the end.
+
+#### Example
+
+Create a vector with the first 50 Fibonacci integers.
+
+```C
+#include <reactor.h>                                                                                                    
+                                                                                                                        
+void fib(vector_t *v, size_t a, size_t b, int remaining)                                                                
+{                                                                                                                       
+  if (!remaining)                                                                                                       
+    return;                                                                                                             
+  vector_push_back(v, &a);                                                                                              
+  fib(v, b, a + b, remaining - 1);                                                                                      
+}                                                                                                                       
+                                                                                                                        
+int main()                                                                                                              
+{                                                                                                                       
+  vector_t v;                                                                                                           
+  int i;                                                                                                                
+                                                                                                                        
+  vector_construct(&v, sizeof (size_t));                                                                                
+  fib(&v, 0, 1, 50);                                                                                                    
+  for (i = 0; i < vector_size(&v); i++)                                                                                 
+    printf("%lu\n", *(size_t *) vector_at(&v, i));                                                                      
+  vector_destruct(&v, NULL);                                                                                            
+}                                                                                        
 ```
