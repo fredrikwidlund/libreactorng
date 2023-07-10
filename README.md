@@ -9,7 +9,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 
 ## Key Features
 
-- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), hash tables, [dynamic arrays](#vectors), UTF-8 strings, JSON values (including RFC 8259 compliant serialization)
+- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), UTF-8 strings, JSON values (including RFC 8259 compliant serialization)
 - Low level io_uring abstrations
 - High level event abstrations
 - Message queues
@@ -58,7 +58,6 @@ EOF
 gcc -Wall -o main main.c `pkg-config --libs --cflags libreactor`
 ./main
 ```
-
 
 ## Data types
 
@@ -115,37 +114,37 @@ Lists are doubly linked sequence containers, similar to C++ std::list, with O(1)
 Naive example printing primes up to n (10000).
 
 ```C
-#include <reactor.h>                                                                                                    
-                                                                                                                        
-int main()                                                                                                              
-{                                                                                                                       
-  list_t l;                                                                                                             
-  int i, n = 10000, *p_first, *p, *p_next;                                                                              
-                                                                                                                        
-  list_construct(&l);                                                                                                   
-  /* add all integers to n */                                                                                           
-  for (i = 1; i < n; i++)                                                                                               
-    list_push_back(&l, &i, sizeof i);                                                                                   
-  /* skip first integer 1 */                                                                                            
-  p_first = list_next(list_front(&l));                                                                                  
-  /* remove all multiples of first prime in list */                                                                     
-  while (p_first != list_end(&l) && *p_first <= n / 2)                                                                  
-  {                                                                                                                     
-    p = list_next(p_first);                                                                                             
-    while (p != list_end(&l))                                                                                           
-    {                                                                                                                   
-      p_next = list_next(p);                                                                                            
-      if (*p % *p_first == 0)                                                                                           
-        list_erase(p, NULL);                                                                                            
-      p = p_next;                                                                                                       
-    }                                                                                                                   
-    p_first = list_next(p_first);                                                                                       
-  }                                                                                                                     
-  /* print remaining integers */                                                                                        
-  list_foreach(&l, p)                                                                                                   
-    printf("%d\n", *p);                                                                                                 
-  list_destruct(&l, NULL);                                                                                              
-}                                                                                                                       
+#include <reactor.h>
+
+int main()
+{
+  list_t l;
+  int i, n = 10000, *p_first, *p, *p_next;
+
+  list_construct(&l);
+  /* add all integers to n */
+  for (i = 1; i < n; i++)
+    list_push_back(&l, &i, sizeof i);
+  /* skip first integer 1 */
+  p_first = list_next(list_front(&l));
+  /* remove all multiples of first prime in list */
+  while (p_first != list_end(&l) && *p_first <= n / 2)
+  {
+    p = list_next(p_first);
+    while (p != list_end(&l))
+    {
+      p_next = list_next(p);
+      if (*p % *p_first == 0)
+        list_erase(p, NULL);
+      p = p_next;
+    }
+    p_first = list_next(p_first);
+  }
+  /* print remaining integers */
+  list_foreach(&l, p)
+    printf("%d\n", *p);
+  list_destruct(&l, NULL);
+}
 ```
 
 ### Vectors
@@ -157,25 +156,60 @@ Vectors are dynamically resized arrays, similar to C++ std::vector, with O(1) ra
 Create a vector with the first 50 Fibonacci integers.
 
 ```C
-#include <reactor.h>                                                                                                    
-                                                                                                                        
-void fib(vector_t *v, size_t a, size_t b, int remaining)                                                                
-{                                                                                                                       
-  if (!remaining)                                                                                                       
-    return;                                                                                                             
-  vector_push_back(v, &a);                                                                                              
-  fib(v, b, a + b, remaining - 1);                                                                                      
-}                                                                                                                       
-                                                                                                                        
-int main()                                                                                                              
-{                                                                                                                       
-  vector_t v;                                                                                                           
-  int i;                                                                                                                
-                                                                                                                        
-  vector_construct(&v, sizeof (size_t));                                                                                
-  fib(&v, 0, 1, 50);                                                                                                    
-  for (i = 0; i < vector_size(&v); i++)                                                                                 
-    printf("%lu\n", *(size_t *) vector_at(&v, i));                                                                      
-  vector_destruct(&v, NULL);                                                                                            
-}                                                                                        
+#include <reactor.h>
+
+void fib(vector_t *v, size_t a, size_t b, int remaining)
+{
+  if (!remaining)
+    return;
+  vector_push_back(v, &a);
+  fib(v, b, a + b, remaining - 1);
+}
+
+int main()
+{
+  vector_t v;
+  int i;
+
+  vector_construct(&v, sizeof (size_t));
+  fib(&v, 0, 1, 50);
+  for (i = 0; i < vector_size(&v); i++)
+    printf("%lu\n", *(size_t *) vector_at(&v, i));
+  vector_destruct(&v, NULL);
+}
+```
+
+### Maps
+
+Maps is a associative container that contains key-value pairs with unique keys, similar to std::unordered_map, with average O(1) random access, inserts, and removals.
+
+Maps come in a generic map_t flavour, as well as mapi_t for integer keys and maps_t for string keys.
+
+#### Example
+
+Constant lookups against a Fibonacci table.
+
+```C
+#include <reactor.h>
+
+void fib(mapi_t *m, size_t a, size_t b, int remaining)
+{
+  if (!remaining)
+    return;
+  mapi_insert(m, a, 1, NULL);
+  fib(m, b, a + b, remaining - 1);
+}
+
+int main()
+{
+  mapi_t m;
+  size_t test[] = {233, 234, 377, 378, 610, 611};
+  int i;
+
+  mapi_construct(&m);
+  fib(&m, 0, 1, 50);
+  for (i = 0; i < sizeof test / sizeof *test; i++)
+    printf("%lu %s a Fibonacci number\n", test[i], mapi_at(&m, test[i]) ? "is" : "is not");
+  mapi_destruct(&m, NULL);
+}
 ```
