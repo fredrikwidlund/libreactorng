@@ -9,7 +9,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 
 ## Key Features
 
-- Data types such as [data vectors](#data-vectors), [buffers](#buffers), lists, hash tables, dynamic arrays, UTF-8 strings, JSON values (including RFC 8259 compliant serialization)
+- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), hash tables, dynamic arrays, UTF-8 strings, JSON values (including RFC 8259 compliant serialization)
 - Low level io_uring abstrations
 - High level event abstrations
 - Message queues
@@ -104,4 +104,46 @@ int main()
   buffer_save(&b, "/tmp/motd");
   buffer_destruct(&b);
 }
+```
+
+### lists
+
+Lists are doubly linked sequence containers with O(1) inserts (given a known position) and deletes.
+
+#### Example
+
+Naive example printing primes up to n (10000).
+
+```C
+#include <reactor.h>                                                                                                    
+                                                                                                                        
+int main()                                                                                                              
+{                                                                                                                       
+  list_t l;                                                                                                             
+  int i, n = 10000, *p_first, *p, *p_next;                                                                              
+                                                                                                                        
+  list_construct(&l);                                                                                                   
+  /* add all integers to n */                                                                                           
+  for (i = 1; i < n; i++)                                                                                               
+    list_push_back(&l, &i, sizeof i);                                                                                   
+  /* skip first integer 1 */                                                                                            
+  p_first = list_next(list_front(&l));                                                                                  
+  /* remove all multiples of first prime in list */                                                                     
+  while (p_first != list_end(&l) && *p_first <= n / 2)                                                                  
+  {                                                                                                                     
+    p = list_next(p_first);                                                                                             
+    while (p != list_end(&l))                                                                                           
+    {                                                                                                                   
+      p_next = list_next(p);                                                                                            
+      if (*p % *p_first == 0)                                                                                           
+        list_erase(p, NULL);                                                                                            
+      p = p_next;                                                                                                       
+    }                                                                                                                   
+    p_first = list_next(p_first);                                                                                       
+  }                                                                                                                     
+  /* print remaining integers */                                                                                        
+  list_foreach(&l, p)                                                                                                   
+    printf("%d\n", *p);                                                                                                 
+  list_destruct(&l, NULL);                                                                                              
+}                                                                                                                       
 ```
