@@ -106,7 +106,7 @@ int main()
 }
 ```
 
-### lists
+### Lists
 
 Lists are doubly linked sequence containers, similar to C++ std::list, with O(1) inserts (given a known position) and deletes.
 
@@ -148,7 +148,7 @@ int main()
 }                                                                                                                       
 ```
 
-### vectors
+### Vectors
 
 Vectors are dynamically resized arrays, similar to C++ std::vector, with O(1) random access, and O(1) inserts and removals at the end.
 
