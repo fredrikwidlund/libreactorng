@@ -181,7 +181,7 @@ int main()
 
 ### Maps
 
-Maps is a associative container that contains key-value pairs with unique keys, similar to std::unordered_map, with average O(1) random access, inserts, and removals.
+Maps are associative containers that contains key-value pairs with unique keys, similar to std::unordered_map, with average O(1) random access, inserts, and removals.
 
 Maps come in a generic map_t flavour, as well as mapi_t for integer keys and maps_t for string keys.
 
