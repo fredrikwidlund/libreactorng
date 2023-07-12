@@ -74,6 +74,8 @@ reactor_id_t    reactor_fallocate(reactor_callback_t *, void *, int, int, uint64
 /* madvise */
 /* ... */
 reactor_id_t    reactor_close(reactor_callback_t *, void *, int);
-reactor_id_t    reactor_send_zerocopy(reactor_callback_t *, void *, int, const void *, size_t, int);
+
+/* not supported in ubuntu-latest */
+/* reactor_id_t    reactor_send_zerocopy(reactor_callback_t *, void *, int, const void *, size_t, int); */
 
 #endif /* REACTOR_REACTOR_H */

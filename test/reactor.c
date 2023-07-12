@@ -348,6 +348,7 @@ static void test_connect(__attribute__((unused)) void **arg)
   close(c);
 }
 
+/*
 static void test_send_zerocopy(__attribute__((unused)) void **arg)
 {
   struct state state = {.value = 0};
@@ -376,6 +377,7 @@ static void test_send_zerocopy(__attribute__((unused)) void **arg)
   close(s);
   close(c);
 }
+*/
 
 static void test_fallocate(__attribute__((unused)) void **arg)
 {
@@ -425,7 +427,7 @@ int main()
       cmocka_unit_test(test_connect),
       cmocka_unit_test(test_fallocate),
       cmocka_unit_test(test_close),
-      cmocka_unit_test(test_send_zerocopy),
+/*      cmocka_unit_test(test_send_zerocopy), */
       cmocka_unit_test(test_destruct)
     };
 

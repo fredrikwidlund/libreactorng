@@ -272,8 +272,9 @@ void reactor_loop_once(void)
       if (!cqe)
         break;
       user = (reactor_user_t *) cqe->user_data;
-      if (!(cqe->flags & IORING_CQE_F_NOTIF))
-        reactor_call(user, REACTOR_CALL, cqe->res);
+      /* not supported in ubuntu latest */
+      /* if (!(cqe->flags & IORING_CQE_F_NOTIF)) */
+      reactor_call(user, REACTOR_CALL, cqe->res);
       if (!(cqe->flags & IORING_CQE_F_MORE))
         reactor_free_user(user);
     }
@@ -671,6 +672,8 @@ reactor_id_t reactor_close(reactor_callback_t *callback, void *state, int fd)
   return (reactor_id_t) user;
 }
 
+/* not supported in ubuntu-latest */
+/*
 reactor_id_t reactor_send_zerocopy(reactor_callback_t *callback, void *state, int fd, const void *base, size_t size, int flags)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
@@ -687,3 +690,4 @@ reactor_id_t reactor_send_zerocopy(reactor_callback_t *callback, void *state, in
 
   return (reactor_id_t) user;
 }
+*/
