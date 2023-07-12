@@ -6,6 +6,7 @@
 #include <time.h>
 #include <sys/socket.h>
 #include <sys/epoll.h>
+#include <linux/version.h>
 #include <reactor.h>
 
 #define REACTOR_RING_SIZE 4096
@@ -75,7 +76,8 @@ reactor_id_t    reactor_fallocate(reactor_callback_t *, void *, int, int, uint64
 /* ... */
 reactor_id_t    reactor_close(reactor_callback_t *, void *, int);
 
-/* not supported in ubuntu-latest */
-/* reactor_id_t    reactor_send_zerocopy(reactor_callback_t *, void *, int, const void *, size_t, int); */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,0,0)
+reactor_id_t    reactor_send_zerocopy(reactor_callback_t *, void *, int, const void *, size_t, int);
+#endif
 
 #endif /* REACTOR_REACTOR_H */

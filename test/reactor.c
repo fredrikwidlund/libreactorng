@@ -12,6 +12,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <cmocka.h>
+#include <linux/version.h>
 
 #include <reactor.h>
 
@@ -348,7 +349,7 @@ static void test_connect(__attribute__((unused)) void **arg)
   close(c);
 }
 
-/*
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,0,0)
 static void test_send_zerocopy(__attribute__((unused)) void **arg)
 {
   struct state state = {.value = 0};
@@ -377,7 +378,7 @@ static void test_send_zerocopy(__attribute__((unused)) void **arg)
   close(s);
   close(c);
 }
-*/
+#endif
 
 static void test_fallocate(__attribute__((unused)) void **arg)
 {
@@ -427,7 +428,9 @@ int main()
       cmocka_unit_test(test_connect),
       cmocka_unit_test(test_fallocate),
       cmocka_unit_test(test_close),
-/*      cmocka_unit_test(test_send_zerocopy), */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,0,0)
+      cmocka_unit_test(test_send_zerocopy),
+#endif
       cmocka_unit_test(test_destruct)
     };
 
