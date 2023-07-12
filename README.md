@@ -9,7 +9,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 
 ## Key Features
 
-- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), [UTF-8 strings](#utf-8-strings), [JSON values](#json) (including RFC 8259 compliant serialization)
+- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), [UTF-8 strings](#utf-8-strings), [JSON values (including RFC 8259 compliant serialization)](#json)
 - Low level io_uring abstrations
 - High level event abstrations
 - Message queues
@@ -227,5 +227,33 @@ int main()
 
   printf("string length: %lu\n", string_utf8_length(s));
   fwrite(string_base(s), string_size(s), 1, stdout);
+}
+```
+
+### JSON
+
+JSON support includes create an opaque complex value_t container that can dynamic generic data structures runtime, as well as serialize to, and deserialize from fully compliant JSON notation. The value_t type is extendable to support non standard JSON values such as binary data and references. 
+
+#### Example
+
+```C
+int main()
+{
+  value_t *v, *k;
+  string_t s;
+
+  v = value_object();
+  value_object_set_release(v, string("a smiley"), value_string(string("\U0001F600")));
+  k = value_array();
+  value_object_set_release(v, string("some interesting numbers"), k);
+  value_array_append_release(k, value_number(184467440737095516.0L));
+  value_array_append_release(k, value_number(123.456e-789L));
+  value_array_append_release(k, value_number(3.14L));
+
+  s = value_encode(v, 1);
+  fwrite(string_base(s), string_size(s), 1, stdout);
+  string_release(s);
+
+  value_release(v);
 }
 ```
