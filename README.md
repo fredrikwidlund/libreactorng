@@ -264,7 +264,7 @@ int main()
 
 ### Memory pools
 
-Memory pools improves performance when recurring allocating and deallocating objects of a predetermined size.
+Memory pools improves performance when frequently allocating and deallocating objects of a predetermined size.
 
 #### Example
 
