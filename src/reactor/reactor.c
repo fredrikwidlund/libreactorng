@@ -10,6 +10,7 @@
 #include <sys/socket.h>
 #include <sys/epoll.h>
 #include <linux/io_uring.h>
+#include <linux/version.h>
 
 #include <reactor.h>
 
@@ -272,9 +273,14 @@ void reactor_loop_once(void)
       if (!cqe)
         break;
       user = (reactor_user_t *) cqe->user_data;
-      /* not supported in ubuntu latest */
-      /* if (!(cqe->flags & IORING_CQE_F_NOTIF)) */
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,0,0)
+      if (!(cqe->flags & IORING_CQE_F_NOTIF))
+        reactor_call(user, REACTOR_CALL, cqe->res);
+#else
       reactor_call(user, REACTOR_CALL, cqe->res);
+#endif
+
       if (!(cqe->flags & IORING_CQE_F_MORE))
         reactor_free_user(user);
     }
@@ -672,8 +678,7 @@ reactor_id_t reactor_close(reactor_callback_t *callback, void *state, int fd)
   return (reactor_id_t) user;
 }
 
-/* not supported in ubuntu-latest */
-/*
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,0,0)
 reactor_id_t reactor_send_zerocopy(reactor_callback_t *callback, void *state, int fd, const void *base, size_t size, int flags)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
@@ -690,4 +695,4 @@ reactor_id_t reactor_send_zerocopy(reactor_callback_t *callback, void *state, in
 
   return (reactor_id_t) user;
 }
-*/
+#endif
