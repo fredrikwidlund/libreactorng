@@ -9,7 +9,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 
 ## Key Features
 
-- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), [UTF-8 strings](#utf-8-strings), [JSON values (including RFC 8259 compliant serialization)](#json)
+- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), [UTF-8 strings](#utf-8-strings), [JSON values (including RFC 8259 compliant serialization)](#json), [memory pools](#memory-pools)
 - Low level io_uring abstrations
 - High level event abstrations
 - Message queues
@@ -220,6 +220,8 @@ UTF-8 compliant strings store an explicit string length to avoid zero terminatio
 
 #### Example
 
+Prints a simple unicode string including the zero character.
+
 ```C
 int main()
 {
@@ -235,6 +237,8 @@ int main()
 JSON support includes an opaque complex value_t container that can dynamic generic data structures runtime, as well as serialize to, and deserialize from fully compliant JSON notation. The value_t type is extendable to support non standard JSON values such as binary data and references. 
 
 #### Example
+
+Creates and serializes a simple value_t object.
 
 ```C
 int main()
@@ -255,5 +259,27 @@ int main()
   string_release(s);
 
   value_release(v);
+}
+```
+
+### Memory pools
+
+Memory pools improves performance when recurring allocating and deallocating objects of a predetermined size.
+
+#### Example
+
+Allocates an integer and returns it to the pool.
+
+```C
+int main()
+{
+  pool_t p;
+  int *x;
+
+  pool_construct(&p, sizeof (int));
+  x = pool_malloc(&p);
+  *x = 42;
+  pool_free(&p, x);
+  pool_destruct(&p);
 }
 ```

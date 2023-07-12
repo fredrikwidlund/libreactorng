@@ -33,6 +33,7 @@ extern "C" {
 #include "reactor/value.h"
 #include "reactor/encode.h"
 #include "reactor/decode.h"
+#include "reactor/pool.h"
 
 #ifdef __cplusplus
 }
