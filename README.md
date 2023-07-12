@@ -9,7 +9,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 
 ## Key Features
 
-- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), UTF-8 strings, JSON values (including RFC 8259 compliant serialization)
+- Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), [UTF-8 strings](#utf-8-strings), [JSON values (including RFC 8259 compliant serialization)](#json)
 - Low level io_uring abstrations
 - High level event abstrations
 - Message queues
@@ -211,5 +211,49 @@ int main()
   for (i = 0; i < sizeof test / sizeof *test; i++)
     printf("%lu %s a Fibonacci number\n", test[i], mapi_at(&m, test[i]) ? "is" : "is not");
   mapi_destruct(&m, NULL);
+}
+```
+
+### UTF-8 strings
+
+UTF-8 compliant strings store an explicit string length to avoid zero termination issues.
+
+#### Example
+
+```C
+int main()
+{
+  string_t s = string_utf8_decode("unicode character \\ud83d\\ude03, zero character \\u0000, some more text...\\n", NULL);
+
+  printf("string length: %lu\n", string_utf8_length(s));
+  fwrite(string_base(s), string_size(s), 1, stdout);
+}
+```
+
+### JSON
+
+JSON support includes an opaque complex value_t container that can dynamic generic data structures runtime, as well as serialize to, and deserialize from fully compliant JSON notation. The value_t type is extendable to support non standard JSON values such as binary data and references. 
+
+#### Example
+
+```C
+int main()
+{
+  value_t *v, *k;
+  string_t s;
+
+  v = value_object();
+  value_object_set_release(v, string("a smiley"), value_string(string("\U0001F600")));
+  k = value_array();
+  value_object_set_release(v, string("some interesting numbers"), k);
+  value_array_append_release(k, value_number(184467440737095516.0L));
+  value_array_append_release(k, value_number(123.456e-789L));
+  value_array_append_release(k, value_number(3.14L));
+
+  s = value_encode(v, 1);
+  fwrite(string_base(s), string_size(s), 1, stdout);
+  string_release(s);
+
+  value_release(v);
 }
 ```
