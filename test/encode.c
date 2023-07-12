@@ -5,11 +5,11 @@
 #include <cmocka.h>
 #include <reactor.h>
 
-static char *accept[] = {"42",     "-1e2",
+static char *accepts[] = {"42",     "-1e2",
                          "[-1e0]", "1.0E+2",
                          "1.0E-9", "[null, \t\n\r true, false, 2.13, \"test\", [], [1], {}, {\"a\":1, \"b\":2}]"};
 
-static char *reject[] = {
+static char *rejects[] = {
     "-a",  "01",     "1.",   "1e09", "1e99999999", "0x10", "1e",           "nul",      "tru",         "fals",
     "[",   "]",      "+1",   "\"",   "{",          "}",    "{\"a\"",       "{\"a\":}", "{\"a\":42,}", "{null:42}",
     "[42", "[1,,2]", "[1,]", "[}",   "[null}",     "{]",   "{\"a\":null]", "[null",    "[nullnull",
@@ -40,10 +40,10 @@ static void test_decode(__attribute__((unused)) void **arg)
   size_t i;
   value_t *v;
 
-  for (i = 0; i < sizeof accept / sizeof *accept; i++)
-    assert_true(test(accept[i]));
-  for (i = 0; i < sizeof reject / sizeof *reject; i++)
-    assert_false(test(reject[i]));
+  for (i = 0; i < sizeof accepts / sizeof *accepts; i++)
+    assert_true(test(accepts[i]));
+  for (i = 0; i < sizeof rejects / sizeof *rejects; i++)
+    assert_false(test(rejects[i]));
 
   v = value_decode("42", NULL);
   assert_false(value_is_undefined(v));

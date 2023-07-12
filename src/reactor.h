@@ -34,6 +34,7 @@ extern "C" {
 #include "reactor/encode.h"
 #include "reactor/decode.h"
 #include "reactor/pool.h"
+#include "reactor/reactor.h"
 
 #ifdef __cplusplus
 }
