@@ -10,6 +10,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 ## Key Features
 
 - Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), [UTF-8 strings](#utf-8-strings), [JSON values (including RFC 8259 compliant serialization)](#json), [memory pools](#memory-pools)
+- [Generic event driven framework](#events)
 - Low level io_uring abstrations
 - High level event abstrations
 - Message queues
@@ -283,3 +284,43 @@ int main()
   pool_destruct(&p);
 }
 ```
+
+### Events
+
+Event driven architecture is a core design pattern of a libreactor application and implies using asyncronous operations to avoid blocking.
+
+The simplest possible (do nothing) application is shown below. It will initialize the reactor, process all events, and then release all reasources required for the reactor. Since there is nothing triggering events it will terminate without side expressions.
+
+```C
+int main()
+{
+  reactor_construct();
+  reactor_loop();
+  reactor_destruct();
+}
+```
+
+An event is a value created asyncronously by a producer, for example as a result of a asyncronous kernel syscall, or a high order abstract object.
+
+To define how to receive events a *callback* and a *state* is typically prefixed to a low level syscall, or as arguments when constructing an object. The *state* and *data* are sent as part of the resulting *event* (`event->state` and `event->data`). Below is a simple application that asyncronously will read from *stdin* into a *buffer*. When the *reactor_read* command is completed the loop will exit.
+
+```C
+void callback(reactor_event_t *event)
+{
+  printf("read returned %d\n", (int) event->data);
+}
+
+int main()
+{
+  char buffer[1024];
+
+  reactor_construct();
+  reactor_read(callback, NULL, 0, buffer, sizeof buffer, 0);
+  reactor_loop();
+  reactor_destruct();
+}
+```
+
+The power of the event driven pattern is that actors can operate concurrently in the same thread, with a shared state, without a need for locks, mutexes and semaphores, and without a need for context switching. This allows for highly scalable and performance optimized applications, while also minimizing the risk for race conditions. 
+
+Event driven applications tend to be `flexible, loosely-coupled and scalable`, `easier to develop and amenable to change` and `significantly more tolerant of failure`.
