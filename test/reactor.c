@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <signal.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <setjmp.h>
 #include <string.h>
@@ -392,6 +393,15 @@ static void test_fallocate(__attribute__((unused)) void **arg)
   assert_true(fclose(f) == 0);
 }
 
+static void test_openat(__attribute__((unused)) void **arg)
+{
+  struct state state = {.value = -2};
+
+  reactor_openat(callback, &state, AT_FDCWD, "/does/not/exist", O_RDONLY, 0);
+  reactor_loop();
+  assert_int_equal(state.calls, 1);
+}
+
 static void test_close(__attribute__((unused)) void **arg)
 {
   int fd[2];
@@ -427,6 +437,7 @@ int main()
       cmocka_unit_test(test_write),
       cmocka_unit_test(test_connect),
       cmocka_unit_test(test_fallocate),
+      cmocka_unit_test(test_openat),
       cmocka_unit_test(test_close),
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6,0,0)
       cmocka_unit_test(test_send_zerocopy),

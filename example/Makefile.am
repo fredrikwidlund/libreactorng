@@ -6,6 +6,7 @@ LDADD				= ../libreactor.la
 bin_PROGRAMS 			= \
 buffer \
 encode \
-validate
+validate \
+shufflecat
 
 MAINTAINERCLEANFILES 		= Makefile.in

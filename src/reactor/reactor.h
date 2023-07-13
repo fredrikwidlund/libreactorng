@@ -71,9 +71,7 @@ reactor_id_t    reactor_read(reactor_callback_t *, void *, int, void *, size_t, 
 reactor_id_t    reactor_write(reactor_callback_t *, void *, int, const void *, size_t, size_t);
 reactor_id_t    reactor_connect(reactor_callback_t *, void *, int, struct sockaddr *, socklen_t);
 reactor_id_t    reactor_fallocate(reactor_callback_t *, void *, int, int, uint64_t, uint64_t);
-/* fadvise */
-/* madvise */
-/* ... */
+reactor_id_t    reactor_openat(reactor_callback_t *, void *, int, const char *, int, mode_t);
 reactor_id_t    reactor_close(reactor_callback_t *, void *, int);
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6,0,0)

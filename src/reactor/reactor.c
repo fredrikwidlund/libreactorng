@@ -662,6 +662,23 @@ reactor_id_t reactor_fallocate(reactor_callback_t *callback, void *state, int fd
   return (reactor_id_t) user;
 }
 
+reactor_id_t reactor_openat(reactor_callback_t *callback, void *state, int dfd, const char *path, int flags, mode_t mode)
+{
+  reactor_user_t *user = reactor_alloc_user(callback, state);
+
+  *reactor_ring_sqe(&reactor.ring) = (struct io_uring_sqe)
+    {
+      .fd = dfd,
+      .opcode = IORING_OP_OPENAT,
+      .addr = (uint64_t) path,
+      .open_flags = flags,
+      .len = mode,
+      .user_data = (uint64_t) user
+    };
+
+  return (reactor_id_t) user;
+}
+
 reactor_id_t reactor_close(reactor_callback_t *callback, void *state, int fd)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
