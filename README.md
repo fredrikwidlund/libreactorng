@@ -10,7 +10,8 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 ## Key Features
 
 - Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), [UTF-8 strings](#utf-8-strings), [JSON values (including RFC 8259 compliant serialization)](#json), [memory pools](#memory-pools)
-- [Generic event driven framework](#events)
+- Generic [event driven framework](#events)
+- Support for [threads](#threads)
 - Low level io_uring abstrations
 - High level event abstrations
 - Message queues
@@ -324,3 +325,29 @@ int main()
 The power of the event driven pattern is that actors can operate concurrently in the same thread, with a shared state, without a need for locks, mutexes and semaphores, and without a need for context switching. This allows for highly scalable and performance optimized applications, while also minimizing the risk for race conditions. 
 
 Event driven applications tend to be `flexible, loosely-coupled and scalable`, `easier to develop and amenable to change` and `significantly more tolerant of failure`.
+
+### Threads
+
+Threads can be spawned and results collected using an event driven pattern.
+
+#### Example
+
+```C
+void async_callback(reactor_event_t *event)
+{
+  if (event->type == REACTOR_CALL)
+  {
+    printf("separate thread that can block and manipulate state\n");
+    sleep(1);
+    printf("exit\n");
+  }
+}
+
+int main()
+{
+  reactor_construct();
+  reactor_async(async_callback, NULL);
+  reactor_loop();
+  reactor_destruct();
+}
+```
