@@ -12,7 +12,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 - Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), [UTF-8 strings](#utf-8-strings), [JSON values (including RFC 8259 compliant serialization)](#json), [memory pools](#memory-pools)
 - Generic [event driven framework](#events)
 - Support for [threads](#threads)
-- Low level io_uring abstrations
+- Low level [io_uring abstrations](#io-uring)
 - High level event abstrations
 - Message queues
 - Declarative graph based data flow application framework
@@ -351,3 +351,25 @@ int main()
   reactor_destruct();
 }
 ```
+
+### IO Uring
+
+libreactor is built directly on top of the io_uring asynchronous system call interface which is quite complex to work with. Using [liburing](https://github.com/axboe/liburing) simplifies the task somewhat but using it to build large applications is still cumbersome. libreactor presents a streamlined and very simple interface to work with.
+
+Besides the usual event loop construction, libreactor defines a simple function call for each io_uring syscall, prefixed with *callback* and *state* variables that are used when handling the result.
+
+Instead of the syncronous *connect()* call below
+
+```
+fd = connect(sock, &sa, sizeof sa);
+```
+
+The asyncronous *reactor_connect()* version is
+
+```
+id = reactor_connect(callback, state, sock, &sa, sizeof sa);
+```
+
+*id* is an identifier for the asyncronous syscall and can be used to abort the operation.
+
+The same pattern is used for all io_uring syscalls. For an example look at [shufflecat](example/shufflecat.c) that asyncronously opens N files, and asyncronously read a writes single bytes from all files. All operations are non-blocking and concurrent in the same thread.
