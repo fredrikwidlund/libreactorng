@@ -7,6 +7,7 @@ bin_PROGRAMS 			= \
 buffer \
 encode \
 validate \
-shufflecat
+shufflecat \
+simpleread
 
 MAINTAINERCLEANFILES 		= Makefile.in
