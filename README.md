@@ -13,7 +13,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 - Generic [event driven framework](#events)
 - Support for [threads](#threads)
 - Low level [io_uring abstrations](#io-uring)
-- High level event abstrations such as [events](#events)
+- High level event abstrations such as [signals](#signals)
 - Message queues
 - Declarative graph based data flow application framework
 
