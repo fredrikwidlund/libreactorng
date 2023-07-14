@@ -4,70 +4,82 @@
 #include <string.h>
 #include <reactor.h>
 
-struct file
+struct state
 {
-  const char *name;
-  int fd;
-  char buffer[1];
-  size_t read_offset;
-  size_t *write_offset;
+  list_t files;
+  size_t output_offset;
 };
 
-static void read_callback(reactor_event_t *);
+struct file
+{
+  struct state *state;
+  const char *name;
+  int fd;
+  uint8_t byte;
+  size_t input_offset;
+};
 
-static void write_callback(reactor_event_t *event)
+static void file_read(reactor_event_t *);
+
+static void file_write(reactor_event_t *event)
 {
   struct file *file = event->state;
 
-  reactor_read(read_callback, file, file->fd, file->buffer, sizeof file->buffer, file->read_offset);
+  reactor_read(file_read, file, file->fd, &file->byte, 1, file->input_offset);
 }
 
-static void read_callback(reactor_event_t *event)
+static void file_read(reactor_event_t *event)
 {
   struct file *file = event->state;
   int result = event->data;
 
-  if (result > 0)
+  if (result <= 0)
   {
-    file->read_offset += result;
-    reactor_write(write_callback, file, STDOUT_FILENO, file->buffer, result, *file->write_offset);
-    *file->write_offset += result;
-  }
-  else
     reactor_close(NULL, NULL, file->fd);
+    return;
+  }
+
+  file->input_offset++;
+  reactor_write(file_write, file, STDOUT_FILENO, &file->byte, 1, file->state->output_offset);
+  file->state->output_offset++;
 }
 
-static void open_callback(reactor_event_t *event)
+static void file_open(reactor_event_t *event)
 {
   struct file *file = event->state;
   int result = event->data;
 
-  if (result >= 0)
+  if (result <= 0)
   {
-    file->fd = result;
-    reactor_read(read_callback, file, file->fd, file->buffer, sizeof file->buffer, file->read_offset);
+    fprintf(stderr, "error: open %s: %s\n", file->name, strerror(-result));
+    return;
   }
-  else
-    fprintf(stderr, "error: %s: %s\n", file->name, strerror(-result));
+
+  file->fd = result;
+  reactor_read(file_read, file, file->fd, &file->byte, 1, file->input_offset);
+}
+
+void add_file(struct state *state, char *name)
+{
+  struct file *file;
+
+  file = list_push_back(&state->files, NULL, sizeof *file);
+  file->state = state;
+  file->name = name;
+  file->input_offset = 0;
+  reactor_openat(file_open, file, AT_FDCWD, file->name, O_RDONLY, 0);
 }
 
 int main(int argc, char **argv)
 {
+  struct state state = {0};
   int i;
-  list_t files;
-  struct file *file;
-  size_t write_offset = 0;
 
-  list_construct(&files);
+  list_construct(&state.files);
   reactor_construct();
   for (i = 1; i < argc; i++)
-  {
-    file = list_push_back(&files, NULL, sizeof *file);
-    file->name = argv[i];
-    file->write_offset = &write_offset;
-    reactor_openat(open_callback, file, AT_FDCWD, file->name, O_RDONLY, 0);
-  }
+    add_file(&state, argv[i]);
   reactor_loop();
   reactor_destruct();
-  list_destruct(&files, NULL);
+  list_destruct(&state.files, NULL);
 }

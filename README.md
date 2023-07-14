@@ -10,8 +10,9 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 ## Key Features
 
 - Data types such as [data vectors](#data-vectors), [buffers](#buffers), [lists](#lists), [dynamic arrays](#vectors), [hash tables](#maps), [UTF-8 strings](#utf-8-strings), [JSON values (including RFC 8259 compliant serialization)](#json), [memory pools](#memory-pools)
-- [Generic event driven framework](#events)
-- Low level io_uring abstrations
+- Generic [event driven framework](#events)
+- Support for [threads](#threads)
+- Low level [io_uring abstrations](#io-uring)
 - High level event abstrations
 - Message queues
 - Declarative graph based data flow application framework
@@ -324,3 +325,51 @@ int main()
 The power of the event driven pattern is that actors can operate concurrently in the same thread, with a shared state, without a need for locks, mutexes and semaphores, and without a need for context switching. This allows for highly scalable and performance optimized applications, while also minimizing the risk for race conditions. 
 
 Event driven applications tend to be `flexible, loosely-coupled and scalable`, `easier to develop and amenable to change` and `significantly more tolerant of failure`.
+
+### Threads
+
+Threads can be spawned and results collected using an event driven pattern.
+
+#### Example
+
+```C
+void async_callback(reactor_event_t *event)
+{
+  if (event->type == REACTOR_CALL)
+  {
+    printf("separate thread that can block and manipulate state\n");
+    sleep(1);
+    printf("exit\n");
+  }
+}
+
+int main()
+{
+  reactor_construct();
+  reactor_async(async_callback, NULL);
+  reactor_loop();
+  reactor_destruct();
+}
+```
+
+### IO Uring
+
+libreactor is built directly on top of the io_uring asynchronous system call interface which is quite complex to work with. Using [liburing](https://github.com/axboe/liburing) simplifies the task somewhat but using it to build large applications is still cumbersome. libreactor presents a streamlined and very simple interface to work with.
+
+Besides the usual event loop construction, libreactor defines a simple function call for each io_uring syscall, prefixed with *callback* and *state* variables that are used when handling the result.
+
+Instead of the syncronous *connect()* call below
+
+```
+fd = connect(sock, &sa, sizeof sa);
+```
+
+The asyncronous *reactor_connect()* version is
+
+```
+id = reactor_connect(callback, state, sock, &sa, sizeof sa);
+```
+
+*id* is an identifier for the asyncronous syscall and can be used to abort the operation.
+
+The same pattern is used for all io_uring syscalls. For a a playful example look at [shufflecat](example/shufflecat.c) that asyncronously opens N files, and concurrently streams from all files to stdout, one byte at the time. All operations are non-blocking and concurrent in the same thread.
