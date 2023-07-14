@@ -35,7 +35,7 @@ extern "C" {
 #include "reactor/decode.h"
 #include "reactor/pool.h"
 #include "reactor/reactor.h"
-#include "reactor/event.h"
+#include "reactor/signal.h"
 
 #ifdef __cplusplus
 }

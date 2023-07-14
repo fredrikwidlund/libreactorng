@@ -374,9 +374,9 @@ id = reactor_connect(callback, state, sock, &sa, sizeof sa);
 
 The same pattern is used for all io_uring syscalls. For a a playful example look at [shufflecat](example/shufflecat.c) that asyncronously opens N files, and concurrently streams from all files to stdout, one byte at the time. All operations are non-blocking and concurrent in the same thread.
 
-### Events
+### Signals
 
-Events are polled signals sent between actors or threads, based on the *eventfd* interface.
+Polled signals sent between actors or threads, based on the eventfd interface.
 
 #### Example
 
@@ -384,32 +384,32 @@ Spawns a separate thread and waits for a signal.
 
 
 ```C
-void callback(reactor_event_t *reactor_event)
+void callback(reactor_event_t *event)
 {
-  event_t *event = reactor_event->state;
+  signal_t *signal = event->state;
 
   printf("signal received\n");
-  event_close(event);
+  signal_close(signal);
 }
 
-void producer(reactor_event_t *reactor_event)
+void producer(reactor_event_t *event)
 {
-  event_t *event = reactor_event->state;
+  signal_t *signal = event->state;
 
-  if (reactor_event->type == REACTOR_CALL)
-    event_signal_sync(event);
+  if (event->type == REACTOR_CALL)
+    signal_send_sync(signal);
 }
 
 int main()
 {
-  event_t event;
+  signal_t signal;
 
   reactor_construct();
-  event_construct(&event, callback, &event);
-  event_open(&event);
-  reactor_async(producer, &event);
+  signal_construct(&signal, callback, &signal);
+  signal_open(&signal);
+  reactor_async(producer, &signal);
   reactor_loop();
-  event_destruct(&event);
+  signal_destruct(&signal);
   reactor_destruct();
 }
 ```

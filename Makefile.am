@@ -18,7 +18,7 @@ src/reactor/encode.c \
 src/reactor/decode.c \
 src/reactor/pool.c \
 src/reactor/reactor.c \
-src/reactor/event.c
+src/reactor/signal.c
 
 HEADER_FILES = \
 src/reactor/data.h \
@@ -36,7 +36,7 @@ src/reactor/encode.h \
 src/reactor/decode.h \
 src/reactor/pool.h \
 src/reactor/reactor.h \
-src/reactor/event.h
+src/reactor/signal.h
 
 lib_LTLIBRARIES 		= libreactor.la
 libreactor_la_SOURCES 		= $(SOURCE_FILES) $(HEADER_FILES)
@@ -87,7 +87,7 @@ test/value \
 test/encode \
 test/pool \
 test/reactor \
-test/event
+test/signal
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 
