@@ -19,7 +19,8 @@ src/reactor/decode.c \
 src/reactor/pool.c \
 src/reactor/reactor.c \
 src/reactor/signal.c \
-src/reactor/timeout.c
+src/reactor/timeout.c \
+src/reactor/notify.c
 
 HEADER_FILES = \
 src/reactor/data.h \
@@ -38,7 +39,8 @@ src/reactor/decode.h \
 src/reactor/pool.h \
 src/reactor/reactor.h \
 src/reactor/signal.h \
-src/reactor/timeout.h
+src/reactor/timeout.h \
+src/reactor/notify.h
 
 lib_LTLIBRARIES 		= libreactor.la
 libreactor_la_SOURCES 		= $(SOURCE_FILES) $(HEADER_FILES)
@@ -90,7 +92,8 @@ test/encode \
 test/pool \
 test/reactor \
 test/signal \
-test/timeout
+test/timeout \
+test/notify
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 

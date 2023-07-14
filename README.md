@@ -13,7 +13,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 - Generic [event driven framework](#events)
 - Support for [threads](#threads)
 - Low level [io_uring abstrations](#io-uring)
-- High level event abstrations such as [signals](#signals), [timers](#timers)
+- High level event abstrations such as [signals](#signals), [timers](#timers), [file system event notifiers](#notify)
 - Message queues
 - Declarative graph based data flow application framework
 
@@ -436,6 +436,44 @@ int main()
   timeout_construct(&t, callback, &t);
   timeout_set(&t, reactor_now() + 1000000000, 0);
   reactor_loop();
+  reactor_destruct();
+}
+```
+
+### Notify
+
+Monitoring filesystem events based on *inotify*.
+
+#### Example
+
+Displays the first event for each file given as argument to the program.
+
+```C
+void callback(reactor_event_t *event)
+{
+  notify_t *notify = event->state;
+  notify_event_t *e = (notify_event_t *) event->data;
+
+  fprintf(stdout, "%d:%04x:%s:%s\n", e->id, e->mask, e->path, e->name);
+  notify_remove_path(notify, e->path);
+}
+
+int main(int argc, char **argv)
+{
+  notify_t notify;
+  int i, e;
+
+  reactor_construct();
+  notify_construct(&notify, callback, &notify);
+  notify_open(&notify);
+  for (i = 1; i < argc; i++)
+  {
+    e = notify_add(&notify, argv[i], IN_ALL_EVENTS);
+    if (e == -1)
+      err(1, "notify_add");
+  }
+  reactor_loop();
+  notify_destruct(&notify);
   reactor_destruct();
 }
 ```

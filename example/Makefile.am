@@ -10,6 +10,7 @@ validate \
 shufflecat \
 simpleread \
 signal \
-timeout
+timeout \
+notify
 
 MAINTAINERCLEANFILES 		= Makefile.in
