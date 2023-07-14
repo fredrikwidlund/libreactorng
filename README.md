@@ -372,4 +372,4 @@ id = reactor_connect(callback, state, sock, &sa, sizeof sa);
 
 *id* is an identifier for the asyncronous syscall and can be used to abort the operation.
 
-The same pattern is used for all io_uring syscalls. For an example look at [shufflecat](example/shufflecat.c) that asyncronously opens N files, and asyncronously read a writes single bytes from all files. All operations are non-blocking and concurrent in the same thread.
+The same pattern is used for all io_uring syscalls. For a a playful example look at [shufflecat](example/shufflecat.c) that asyncronously opens N files, and concurrently streams from all files to stdout, one byte at the time. All operations are non-blocking and concurrent in the same thread.
