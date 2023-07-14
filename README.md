@@ -13,7 +13,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 - Generic [event driven framework](#events)
 - Support for [threads](#threads)
 - Low level [io_uring abstrations](#io-uring)
-- High level event abstrations such as [signals](#signals)
+- High level event abstrations such as [signals](#signals), [timers](#timers)
 - Message queues
 - Declarative graph based data flow application framework
 
@@ -410,6 +410,32 @@ int main()
   reactor_async(producer, &signal);
   reactor_loop();
   signal_destruct(&signal);
+  reactor_destruct();
+}
+```
+
+### Timers
+
+Timers triggers alerts at a set point in time and optionally continuously with a delay.
+
+#### Example
+
+Trigger an alert a second (1000000000ns) from now.
+
+```C
+void callback(__attribute__((unused)) reactor_event_t *event)
+{
+  printf("timeout\n");
+}
+
+int main()
+{
+  timeout_t t;
+
+  reactor_construct();
+  timeout_construct(&t, callback, &t);
+  timeout_set(&t, reactor_now() + 1000000000, 0);
+  reactor_loop();
   reactor_destruct();
 }
 ```

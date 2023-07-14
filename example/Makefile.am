@@ -9,6 +9,7 @@ encode \
 validate \
 shufflecat \
 simpleread \
-signal
+signal \
+timeout
 
 MAINTAINERCLEANFILES 		= Makefile.in

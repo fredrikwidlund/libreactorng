@@ -36,6 +36,7 @@ extern "C" {
 #include "reactor/pool.h"
 #include "reactor/reactor.h"
 #include "reactor/signal.h"
+#include "reactor/timeout.h"
 
 #ifdef __cplusplus
 }
