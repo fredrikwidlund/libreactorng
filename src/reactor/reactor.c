@@ -133,19 +133,19 @@ reactor_event_t reactor_event_define(void *state, int type, uint64_t data)
 
 /* reactor user */
 
-static void reactor_user_t_callback(reactor_event_t *event)
+static void reactor_user_callback(reactor_event_t *event)
 {
   (void) event;
 }
 
-reactor_user_t reactor_user_t_define(reactor_callback_t *callback, void *state)
+reactor_user_t reactor_user_define(reactor_callback_t *callback, void *state)
 {
-  return (reactor_user_t) {.callback = callback ? callback : reactor_user_t_callback, .state = state};
+  return (reactor_user_t) {.callback = callback ? callback : reactor_user_callback, .state = state};
 }
 
-void reactor_user_t_construct(reactor_user_t *user, reactor_callback_t *callback, void *state)
+void reactor_user_construct(reactor_user_t *user, reactor_callback_t *callback, void *state)
 {
-  *user = reactor_user_t_define(callback, state);
+  *user = reactor_user_define(callback, state);
 }
 
 /* reactor */
@@ -176,7 +176,7 @@ static reactor_user_t *reactor_alloc_user(reactor_callback_t *callback, void *st
 {
   reactor_user_t *user = pool_malloc(&reactor.users);
 
-  *user = reactor_user_t_define(callback, state);
+  *user = reactor_user_define(callback, state);
   return user;
 }
 
@@ -295,7 +295,7 @@ void reactor_cancel(reactor_id_t id, reactor_callback_t *callback, void *state)
   reactor_user_t *user = (reactor_user_t *) (id & ~0x01ULL);
   int not_iouring = id & 0x01ULL;
 
-  *user = reactor_user_t_define(callback, state);
+  *user = reactor_user_define(callback, state);
   if (!not_iouring)
     (void) reactor_async_cancel(NULL, NULL, (uint64_t) user);
 }
@@ -306,7 +306,7 @@ reactor_id_t reactor_async(reactor_callback_t *callback, void *state)
   reactor_id_t id = (reactor_id_t) async;
   int e;
 
-  reactor_user_t_construct(&async->user, callback, state);
+  reactor_user_construct(&async->user, callback, state);
   async->signal = eventfd(0, 0);
   async->read = reactor_read(reactor_async_return, async, async->signal, &async->counter, sizeof async->counter, 0);
   e = thrd_create(&async->id, reactor_async_call, async);

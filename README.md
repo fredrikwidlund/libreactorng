@@ -13,7 +13,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 - Generic [event driven framework](#events)
 - Support for [threads](#threads)
 - Low level [io_uring abstrations](#io-uring)
-- High level event abstrations
+- High level event abstrations such as [events](#events)
 - Message queues
 - Declarative graph based data flow application framework
 
@@ -373,3 +373,43 @@ id = reactor_connect(callback, state, sock, &sa, sizeof sa);
 *id* is an identifier for the asyncronous syscall and can be used to abort the operation.
 
 The same pattern is used for all io_uring syscalls. For a a playful example look at [shufflecat](example/shufflecat.c) that asyncronously opens N files, and concurrently streams from all files to stdout, one byte at the time. All operations are non-blocking and concurrent in the same thread.
+
+### Events
+
+Events are polled signals sent between actors or threads, based on the *eventfd* interface.
+
+#### Example
+
+Spawns a separate thread and waits for a signal.
+
+
+```C
+void callback(reactor_event_t *reactor_event)
+{
+  event_t *event = reactor_event->state;
+
+  printf("signal received\n");
+  event_close(event);
+}
+
+void producer(reactor_event_t *reactor_event)
+{
+  event_t *event = reactor_event->state;
+
+  if (reactor_event->type == REACTOR_CALL)
+    event_signal_sync(event);
+}
+
+int main()
+{
+  event_t event;
+
+  reactor_construct();
+  event_construct(&event, callback, &event);
+  event_open(&event);
+  reactor_async(producer, &event);
+  reactor_loop();
+  event_destruct(&event);
+  reactor_destruct();
+}
+```
