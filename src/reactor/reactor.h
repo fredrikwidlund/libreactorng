@@ -1,5 +1,5 @@
-#ifndef REACTOR_REACTOR_H
-#define REACTOR_REACTOR_H
+#ifndef REACTOR_REACTOR_H_INCLUDED
+#define REACTOR_REACTOR_H_INCLUDED
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -78,4 +78,4 @@ reactor_id_t    reactor_close(reactor_callback_t *, void *, int);
 reactor_id_t    reactor_send_zerocopy(reactor_callback_t *, void *, int, const void *, size_t, int);
 #endif
 
-#endif /* REACTOR_REACTOR_H */
+#endif /* REACTOR_REACTOR_H_INCLUDED */
