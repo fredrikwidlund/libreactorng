@@ -13,7 +13,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 - Generic [event driven framework](#events)
 - Support for [threads](#threads)
 - Low level [io_uring abstrations](#io-uring)
-- High level event abstrations such as [signals](#signals), [timers](#timers), [file system event notifiers](#notify)
+- High level event abstrations such as [signals](#signals), [timers](#timers), [file system event notifiers](#notify), [DNS resolvers](#resolvers)
 - Message queues
 - Declarative graph based data flow application framework
 
@@ -474,6 +474,40 @@ int main(int argc, char **argv)
   }
   reactor_loop();
   notify_destruct(&notify);
+  reactor_destruct();
+}
+```
+
+### Resolvers
+
+Network address and service translation.
+
+#### Example
+
+Lookup the IP address for www.google.com.
+
+```C
+void callback(reactor_event_t *event)
+{
+  struct addrinfo *ai = (struct addrinfo *) event->data;
+  char host[NI_MAXHOST], serv[NI_MAXSERV];
+
+  while (ai)
+    {
+      getnameinfo(ai->ai_addr, ai->ai_addrlen, host, sizeof host, serv, sizeof serv, NI_NUMERICHOST);
+      printf("%s (%s)\n", host, serv);
+      ai = ai->ai_next;
+    }
+}
+
+int main(int argc, char **argv)
+{
+  resolver_t r;
+
+  reactor_construct();
+  resolver_construct(&r, callback, NULL);
+  resolver_lookup(&r, 0, AF_INET, SOCK_STREAM, 0, "www.google.com", "https");
+  reactor_loop();
   reactor_destruct();
 }
 ```

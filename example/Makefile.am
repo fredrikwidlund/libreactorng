@@ -11,6 +11,7 @@ shufflecat \
 simpleread \
 signal \
 timeout \
-notify
+notify \
+lookup
 
 MAINTAINERCLEANFILES 		= Makefile.in
