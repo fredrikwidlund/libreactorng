@@ -21,7 +21,7 @@ src/reactor/reactor.c \
 src/reactor/signal.c \
 src/reactor/timeout.c \
 src/reactor/notify.c \
-src/reactor/resolver.c
+src/reactor/network.c
 
 HEADER_FILES = \
 src/reactor/data.h \
@@ -42,7 +42,7 @@ src/reactor/reactor.h \
 src/reactor/signal.h \
 src/reactor/timeout.h \
 src/reactor/notify.h \
-src/reactor/resolver.h
+src/reactor/network.h
 
 lib_LTLIBRARIES 		= libreactor.la
 libreactor_la_SOURCES 		= $(SOURCE_FILES) $(HEADER_FILES)
@@ -96,7 +96,7 @@ test/reactor \
 test/signal \
 test/timeout \
 test/notify \
-test/resolver
+test/network
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 
