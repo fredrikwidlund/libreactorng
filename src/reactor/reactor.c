@@ -215,6 +215,7 @@ void reactor_construct(void)
     reactor.next_current = &reactor.next[0];
     vector_construct(&reactor.next[0], sizeof (reactor_user_t *));
     vector_construct(&reactor.next[1], sizeof (reactor_user_t *));
+    network_construct();
   }
   reactor.ref++;
 }
@@ -224,6 +225,7 @@ void reactor_destruct(void)
   reactor.ref--;
   if (!reactor.ref)
   {
+    network_destruct();
     reactor_ring_destruct(&reactor.ring);
     pool_destruct(&reactor.users);
     vector_destruct(&reactor.next[0], NULL);
@@ -259,6 +261,8 @@ void reactor_loop_once(void)
 
   if (vector_size(reactor.next_current))
   {
+    reactor.time = 0;
+
     current = reactor.next_current;
     reactor.next_current = reactor.next_current == &reactor.next[0] ? &reactor.next[1] : &reactor.next[0];
     for (i = 0; i < vector_size(current); i++)
@@ -273,6 +277,7 @@ void reactor_loop_once(void)
   if (pool_size(&reactor.users) > vector_size(reactor.next_current))
   {
     reactor.time = 0;
+
     reactor_ring_update(&reactor.ring);
     while (1)
     {

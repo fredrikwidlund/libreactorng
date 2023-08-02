@@ -38,7 +38,7 @@ extern "C" {
 #include "reactor/signal.h"
 #include "reactor/timeout.h"
 #include "reactor/notify.h"
-#include "reactor/resolver.h"
+#include "reactor/network.h"
 
 #ifdef __cplusplus
 }
