@@ -157,7 +157,8 @@ struct reactor
   size_t          ref;
   reactor_ring_t  ring;
   pool_t          users;
-  vector_t        next;
+  void           *next_current;
+  vector_t        next[2];
   reactor_time_t  time;
 };
 
@@ -211,7 +212,9 @@ void reactor_construct(void)
   {
     reactor_ring_construct(&reactor.ring, REACTOR_RING_SIZE);
     pool_construct(&reactor.users, sizeof(reactor_user_t));
-    vector_construct(&reactor.next, sizeof (reactor_user_t *));
+    reactor.next_current = &reactor.next[0];
+    vector_construct(&reactor.next[0], sizeof (reactor_user_t *));
+    vector_construct(&reactor.next[1], sizeof (reactor_user_t *));
   }
   reactor.ref++;
 }
@@ -223,7 +226,8 @@ void reactor_destruct(void)
   {
     reactor_ring_destruct(&reactor.ring);
     pool_destruct(&reactor.users);
-    vector_destruct(&reactor.next, NULL);
+    vector_destruct(&reactor.next[0], NULL);
+    vector_destruct(&reactor.next[1], NULL);
   }
 }
 
@@ -248,22 +252,25 @@ void reactor_loop(void)
 
 void reactor_loop_once(void)
 {
+  vector_t *current;
   struct io_uring_cqe *cqe;
   reactor_user_t *user;
   size_t i;
 
-  if (vector_size(&reactor.next))
+  if (vector_size(reactor.next_current))
   {
-    for (i = 0; i < vector_size(&reactor.next); i++)
+    current = reactor.next_current;
+    reactor.next_current = reactor.next_current == &reactor.next[0] ? &reactor.next[1] : &reactor.next[0];
+    for (i = 0; i < vector_size(current); i++)
     {
-      user = *(reactor_user_t **) vector_at(&reactor.next, i);
+      user = *(reactor_user_t **) vector_at(current, i);
       reactor_call(user, REACTOR_CALL, 0);
       reactor_free_user(user);
     }
-    vector_clear(&reactor.next, NULL);
+    vector_clear(current, NULL);
   }
 
-  if (pool_size(&reactor.users))
+  if (pool_size(&reactor.users) > vector_size(reactor.next_current))
   {
     reactor.time = 0;
     reactor_ring_update(&reactor.ring);
@@ -320,7 +327,7 @@ reactor_id_t reactor_next(reactor_callback_t *callback, void *state)
 {
   reactor_id_t id = (reactor_id_t) reactor_alloc_user(callback, state);
 
-  vector_push_back(&reactor.next, &id);
+  vector_push_back(reactor.next_current, &id);
   return id | 0x01ULL; /* mark as not iouring */
 }
 
