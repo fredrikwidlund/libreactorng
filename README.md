@@ -13,7 +13,8 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 - Generic [event driven framework](#events)
 - Support for [threads](#threads)
 - Low level [io_uring abstrations](#io-uring)
-- High level event abstrations such as [signals](#signals), [timers](#timers), [file system event notifiers](#notify), [DNS resolvers](#resolvers)
+- High level event abstrations such as [signals](#signals), [timers](#timers), [file system event notifiers](#notify)
+- Network abstractions supporting [servers](#servers), [clients](#clients) and [resolvers](#resolvers)
 - Message queues
 - Declarative graph based data flow application framework
 
