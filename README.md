@@ -485,9 +485,9 @@ Simple network server routines.
 
 #### Example
 
-Create 100 concurrent TCP-servers on ports 10000 to 10099. 
+Create 100 concurrent TCP servers on ports 10000 to 10099. 
 
- ```C
+```C
  void callback(reactor_event_t *event)
 {
   int fd;
@@ -510,7 +510,7 @@ int main(int argc, char **argv)
   reactor_loop();
   reactor_destruct();
 }
- ```
+```
 
 ### Clients
 
