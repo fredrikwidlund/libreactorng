@@ -96,6 +96,7 @@ test/reactor \
 test/signal \
 test/timeout \
 test/notify \
+test/network_resolve \
 test/network
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
