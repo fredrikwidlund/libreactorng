@@ -481,7 +481,7 @@ int main(int argc, char **argv)
 
 ### Resolvers
 
-Network address and service translation.
+Network address and service translation. The resolver will cache results for 10 seconds (10^10ns), configurable with ```network_expire()```. Identical requests will be consolidated and queued to avoid thundering heard issues.
 
 #### Example
 
@@ -491,23 +491,20 @@ Lookup the IP address for www.google.com.
 void callback(reactor_event_t *event)
 {
   struct addrinfo *ai = (struct addrinfo *) event->data;
-  char host[NI_MAXHOST], serv[NI_MAXSERV];
+  char host[NI_MAXHOST];
 
   while (ai)
     {
-      getnameinfo(ai->ai_addr, ai->ai_addrlen, host, sizeof host, serv, sizeof serv, NI_NUMERICHOST);
-      printf("%s (%s)\n", host, serv);
+      getnameinfo(ai->ai_addr, ai->ai_addrlen, host, sizeof host, NULL, 0, NI_NUMERICHOST);
+      printf("%s\n", host);
       ai = ai->ai_next;
     }
 }
 
 int main(int argc, char **argv)
 {
-  resolver_t r;
-
   reactor_construct();
-  resolver_construct(&r, callback, NULL);
-  resolver_lookup(&r, 0, AF_INET, SOCK_STREAM, 0, "www.google.com", "https");
+  network_resolve(callback, NULL, "www.google.com");
   reactor_loop();
   reactor_destruct();
 }
