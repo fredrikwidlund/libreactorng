@@ -12,6 +12,7 @@ simpleread \
 signal \
 timeout \
 notify \
-lookup
+lookup \
+scan
 
 MAINTAINERCLEANFILES 		= Makefile.in
