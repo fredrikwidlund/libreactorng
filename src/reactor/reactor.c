@@ -116,11 +116,11 @@ struct io_uring_cqe *reactor_ring_cqe(reactor_ring_t *ring)
   return cqe;
 }
 
-static void reactor_ring_update(reactor_ring_t *ring)
+static void reactor_ring_update(reactor_ring_t *ring, bool dont_block)
 {
   int n, to_submit = *ring->sq_tail - *ring->sq_head;
 
-  n = syscall(__NR_io_uring_enter, ring->fd, to_submit, 1, IORING_ENTER_GETEVENTS, NULL, NULL);
+  n = syscall(__NR_io_uring_enter, ring->fd, to_submit, dont_block ? 0 : 1, IORING_ENTER_GETEVENTS, NULL, NULL);
   assert(n == to_submit);
 }
 
@@ -257,12 +257,11 @@ void reactor_loop_once(void)
   vector_t *current;
   struct io_uring_cqe *cqe;
   reactor_user_t *user;
-  size_t i;
+  size_t i, next_waiting;
 
   if (vector_size(reactor.next_current))
   {
     reactor.time = 0;
-
     current = reactor.next_current;
     reactor.next_current = reactor.next_current == &reactor.next[0] ? &reactor.next[1] : &reactor.next[0];
     for (i = 0; i < vector_size(current); i++)
@@ -274,11 +273,11 @@ void reactor_loop_once(void)
     vector_clear(current, NULL);
   }
 
-  if (pool_size(&reactor.users) > vector_size(reactor.next_current))
+  next_waiting = vector_size(reactor.next_current);
+  if (pool_size(&reactor.users) > next_waiting)
   {
     reactor.time = 0;
-
-    reactor_ring_update(&reactor.ring);
+    reactor_ring_update(&reactor.ring, next_waiting);
     while (1)
     {
       cqe = reactor_ring_cqe(&reactor.ring);
