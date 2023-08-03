@@ -479,6 +479,42 @@ int main(int argc, char **argv)
 }
 ```
 
+### Servers
+
+Simple network server routines.
+
+#### Example
+
+Create 100 concurrent TCP-servers on ports 10000 to 10099. 
+
+ ```C
+ void callback(reactor_event_t *event)
+{
+  int fd;
+
+  if (event->type == NETWORK_ACCEPT)
+  {
+    fd = event->data;
+    printf("connection on fd %d\n", fd);
+    reactor_close(NULL, NULL, fd);
+  }
+}
+
+int main(int argc, char **argv)
+{
+  int i;
+
+  reactor_construct();
+  for (i = 10000; i < 10100; i ++)
+    network_accept(callback, NULL, NULL, i, NETWORK_REUSEADDR);
+  reactor_loop();
+  reactor_destruct();
+}
+ ```
+
+### Clients
+
+
 ### Resolvers
 
 Network address and service translation. The resolver will cache results for 10 seconds (10^10ns), configurable with ```network_expire()```. Identical requests will be consolidated and queued to avoid thundering heard issues.
