@@ -514,6 +514,41 @@ int main(int argc, char **argv)
 
 ### Clients
 
+Simple network client routines.
+
+#### Example
+
+Scan 50 most common TCP ports (For a slightly more advanced version checkout [scan.c](example/scan.c)).
+
+```C
+const int top50[] = {
+  21,22,23,25,26,53,80,81,110,111,113,135,139,143,179,199,443,445,465,514,515,
+  548,554,587,646,993,995,1025,1026,1027,1433,1720,1723,2000,2001,3306,3389,
+  5060,5666,5900,6001,8000,8008,8080,8443,8888,10000,32768,49152,49154
+};
+
+static void callback(reactor_event_t *event)
+{
+  if (event->type == NETWORK_CONNECT)
+    printf(" %d", *(int *) event->state);
+}
+
+int main(int argc, char **argv)
+{
+  int i, j;
+
+  reactor_construct();
+  for (i = 1; i < argc; i ++)
+  {
+    printf("[%s]", argv[i]);
+    for (j = 0; j < sizeof top50 / sizeof *top50; j++)
+      network_connect(callback, (void *) &top50[j], argv[i], top50[j]);
+    reactor_loop();
+    printf("\n");
+  }
+  reactor_destruct();
+}
+```
 
 ### Resolvers
 
