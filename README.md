@@ -71,9 +71,6 @@ Data vectors are generic data containers reducing the need for the common use ca
 #### Example
 
 ```C
-#include <unistd.h>
-#include <reactor.h>
-
 void out(data_t d)
 {
   write(1, data_base(d), data_size(d));
@@ -93,8 +90,6 @@ Buffers offers generic data containers with dynamic memory allocation. Buffers c
 #### Example
 
 ```C
-#include <reactor.h>
-
 int main()
 {
   buffer_t b;
@@ -117,8 +112,6 @@ Lists are doubly linked sequence containers, similar to C++ std::list, with O(1)
 Naive example printing primes up to n (10000).
 
 ```C
-#include <reactor.h>
-
 int main()
 {
   list_t l;
@@ -159,8 +152,6 @@ Vectors are dynamically resized arrays, similar to C++ std::vector, with O(1) ra
 Create a vector with the first 50 Fibonacci integers.
 
 ```C
-#include <reactor.h>
-
 void fib(vector_t *v, size_t a, size_t b, int remaining)
 {
   if (!remaining)
@@ -193,8 +184,6 @@ Maps come in a generic map_t flavour, as well as mapi_t for integer keys and map
 Constant lookups against a Fibonacci table.
 
 ```C
-#include <reactor.h>
-
 void fib(mapi_t *m, size_t a, size_t b, int remaining)
 {
   if (!remaining)
