@@ -14,7 +14,7 @@ typedef struct signal signal_t;
 struct signal
 {
   reactor_user_t  user;
-  reactor_id_t    read;
+  reactor_t       read;
   uint64_t        counter;
   int             fd;
   bool           *abort;

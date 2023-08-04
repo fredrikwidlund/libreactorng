@@ -166,7 +166,7 @@ struct reactor_async_state
 {
   reactor_user_t  user;
   int             signal;
-  reactor_id_t    read;
+  reactor_t    read;
   uint64_t        counter;
   thrd_t          id;
 };
@@ -301,7 +301,7 @@ void reactor_call(reactor_user_t *user, int type, uint64_t value)
   user->callback((reactor_event_t[]){reactor_event_define(user->state, type, value)});
 }
 
-void reactor_cancel(reactor_id_t id, reactor_callback_t *callback, void *state)
+void reactor_cancel(reactor_t id, reactor_callback_t *callback, void *state)
 {
   reactor_user_t *user = (reactor_user_t *) (id & ~0x01ULL);
   int not_iouring = id & 0x01ULL;
@@ -311,10 +311,10 @@ void reactor_cancel(reactor_id_t id, reactor_callback_t *callback, void *state)
     (void) reactor_async_cancel(NULL, NULL, (uint64_t) user);
 }
 
-reactor_id_t reactor_async(reactor_callback_t *callback, void *state)
+reactor_t reactor_async(reactor_callback_t *callback, void *state)
 {
   reactor_async_state_t *async = malloc(sizeof *async);
-  reactor_id_t id = (reactor_id_t) async;
+  reactor_t id = (reactor_t) async;
   int e;
 
   reactor_user_construct(&async->user, callback, state);
@@ -327,15 +327,15 @@ reactor_id_t reactor_async(reactor_callback_t *callback, void *state)
   return id | 0x01ULL; /* mark as not iouring */
 }
 
-reactor_id_t reactor_next(reactor_callback_t *callback, void *state)
+reactor_t reactor_next(reactor_callback_t *callback, void *state)
 {
-  reactor_id_t id = (reactor_id_t) reactor_alloc_user(callback, state);
+  reactor_t id = (reactor_t) reactor_alloc_user(callback, state);
 
   vector_push_back(reactor.next_current, &id);
   return id | 0x01ULL; /* mark as not iouring */
 }
 
-reactor_id_t reactor_async_cancel(reactor_callback_t *callback, void *state, uint64_t user_data)
+reactor_t reactor_async_cancel(reactor_callback_t *callback, void *state, uint64_t user_data)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -346,10 +346,10 @@ reactor_id_t reactor_async_cancel(reactor_callback_t *callback, void *state, uin
       .user_data = (uint64_t) user,
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_nop(reactor_callback_t *callback, void *state)
+reactor_t reactor_nop(reactor_callback_t *callback, void *state)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -359,10 +359,10 @@ reactor_id_t reactor_nop(reactor_callback_t *callback, void *state)
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_readv(reactor_callback_t *callback, void *state, int fd, const struct iovec *iov, int iovcnt, size_t offset)
+reactor_t reactor_readv(reactor_callback_t *callback, void *state, int fd, const struct iovec *iov, int iovcnt, size_t offset)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -376,10 +376,10 @@ reactor_id_t reactor_readv(reactor_callback_t *callback, void *state, int fd, co
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_writev(reactor_callback_t *callback, void *state, int fd, const struct iovec *iov, int iovcnt, size_t offset)
+reactor_t reactor_writev(reactor_callback_t *callback, void *state, int fd, const struct iovec *iov, int iovcnt, size_t offset)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -393,10 +393,10 @@ reactor_id_t reactor_writev(reactor_callback_t *callback, void *state, int fd, c
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_fsync(reactor_callback_t *callback, void *state, int fd)
+reactor_t reactor_fsync(reactor_callback_t *callback, void *state, int fd)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -407,10 +407,10 @@ reactor_id_t reactor_fsync(reactor_callback_t *callback, void *state, int fd)
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_poll_add(reactor_callback_t *callback, void *state, int fd, short int events)
+reactor_t reactor_poll_add(reactor_callback_t *callback, void *state, int fd, short int events)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -422,10 +422,10 @@ reactor_id_t reactor_poll_add(reactor_callback_t *callback, void *state, int fd,
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_poll_add_multi(reactor_callback_t *callback, void *state, int fd, short int events)
+reactor_t reactor_poll_add_multi(reactor_callback_t *callback, void *state, int fd, short int events)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -438,10 +438,10 @@ reactor_id_t reactor_poll_add_multi(reactor_callback_t *callback, void *state, i
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_poll_update(reactor_callback_t *callback, void *state, reactor_id_t id, short int events)
+reactor_t reactor_poll_update(reactor_callback_t *callback, void *state, reactor_t id, short int events)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -454,10 +454,10 @@ reactor_id_t reactor_poll_update(reactor_callback_t *callback, void *state, reac
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_poll_remove(reactor_callback_t *callback, void *state, reactor_id_t id)
+reactor_t reactor_poll_remove(reactor_callback_t *callback, void *state, reactor_t id)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -468,11 +468,11 @@ reactor_id_t reactor_poll_remove(reactor_callback_t *callback, void *state, reac
       .user_data =(uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
 
-reactor_id_t reactor_epoll_ctl(reactor_callback_t *callback, void *state, int epoll_fd, int op, int fd, struct epoll_event *event)
+reactor_t reactor_epoll_ctl(reactor_callback_t *callback, void *state, int epoll_fd, int op, int fd, struct epoll_event *event)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -486,10 +486,10 @@ reactor_id_t reactor_epoll_ctl(reactor_callback_t *callback, void *state, int ep
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_sync_file_range(reactor_callback_t *callback, void *state, int fd, uint64_t offset, uint64_t nbytes, int flags)
+reactor_t reactor_sync_file_range(reactor_callback_t *callback, void *state, int fd, uint64_t offset, uint64_t nbytes, int flags)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -503,10 +503,10 @@ reactor_id_t reactor_sync_file_range(reactor_callback_t *callback, void *state, 
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_sendmsg(reactor_callback_t *callback, void *state, int socket, const struct msghdr *message, int flags)
+reactor_t reactor_sendmsg(reactor_callback_t *callback, void *state, int socket, const struct msghdr *message, int flags)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -519,10 +519,10 @@ reactor_id_t reactor_sendmsg(reactor_callback_t *callback, void *state, int sock
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_recvmsg(reactor_callback_t *callback, void *state, int socket, struct msghdr *message, int flags)
+reactor_t reactor_recvmsg(reactor_callback_t *callback, void *state, int socket, struct msghdr *message, int flags)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -535,10 +535,10 @@ reactor_id_t reactor_recvmsg(reactor_callback_t *callback, void *state, int sock
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_send(reactor_callback_t *callback, void *state, int fd, const void *base, size_t size, int flags)
+reactor_t reactor_send(reactor_callback_t *callback, void *state, int fd, const void *base, size_t size, int flags)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -552,10 +552,10 @@ reactor_id_t reactor_send(reactor_callback_t *callback, void *state, int fd, con
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_recv(reactor_callback_t *callback, void *state, int fd, void *base, size_t size, int flags)
+reactor_t reactor_recv(reactor_callback_t *callback, void *state, int fd, void *base, size_t size, int flags)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -569,10 +569,10 @@ reactor_id_t reactor_recv(reactor_callback_t *callback, void *state, int fd, voi
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_timeout(reactor_callback_t *callback, void *state, struct timespec *tv, int count, int flags)
+reactor_t reactor_timeout(reactor_callback_t *callback, void *state, struct timespec *tv, int count, int flags)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -586,10 +586,10 @@ reactor_id_t reactor_timeout(reactor_callback_t *callback, void *state, struct t
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_accept(reactor_callback_t *callback, void *state, int fd, struct sockaddr *addr, socklen_t *addrlen, int flags)
+reactor_t reactor_accept(reactor_callback_t *callback, void *state, int fd, struct sockaddr *addr, socklen_t *addrlen, int flags)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -603,10 +603,10 @@ reactor_id_t reactor_accept(reactor_callback_t *callback, void *state, int fd, s
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_read(reactor_callback_t *callback, void *state, int fd, void *base, size_t size, size_t offset)
+reactor_t reactor_read(reactor_callback_t *callback, void *state, int fd, void *base, size_t size, size_t offset)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -620,10 +620,10 @@ reactor_id_t reactor_read(reactor_callback_t *callback, void *state, int fd, voi
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_write(reactor_callback_t *callback, void *state, int fd, const void *base, size_t size, size_t offset)
+reactor_t reactor_write(reactor_callback_t *callback, void *state, int fd, const void *base, size_t size, size_t offset)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -637,10 +637,10 @@ reactor_id_t reactor_write(reactor_callback_t *callback, void *state, int fd, co
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_connect(reactor_callback_t *callback, void *state, int fd, struct sockaddr *addr, socklen_t addrlen)
+reactor_t reactor_connect(reactor_callback_t *callback, void *state, int fd, struct sockaddr *addr, socklen_t addrlen)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -653,10 +653,10 @@ reactor_id_t reactor_connect(reactor_callback_t *callback, void *state, int fd, 
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_fallocate(reactor_callback_t *callback, void *state, int fd, int mode, uint64_t offset, uint64_t len)
+reactor_t reactor_fallocate(reactor_callback_t *callback, void *state, int fd, int mode, uint64_t offset, uint64_t len)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -670,10 +670,10 @@ reactor_id_t reactor_fallocate(reactor_callback_t *callback, void *state, int fd
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_openat(reactor_callback_t *callback, void *state, int dfd, const char *path, int flags, mode_t mode)
+reactor_t reactor_openat(reactor_callback_t *callback, void *state, int dfd, const char *path, int flags, mode_t mode)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -687,10 +687,10 @@ reactor_id_t reactor_openat(reactor_callback_t *callback, void *state, int dfd, 
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
-reactor_id_t reactor_close(reactor_callback_t *callback, void *state, int fd)
+reactor_t reactor_close(reactor_callback_t *callback, void *state, int fd)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -701,11 +701,11 @@ reactor_id_t reactor_close(reactor_callback_t *callback, void *state, int fd)
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6,0,0)
-reactor_id_t reactor_send_zerocopy(reactor_callback_t *callback, void *state, int fd, const void *base, size_t size, int flags)
+reactor_t reactor_send_zerocopy(reactor_callback_t *callback, void *state, int fd, const void *base, size_t size, int flags)
 {
   reactor_user_t *user = reactor_alloc_user(callback, state);
 
@@ -719,6 +719,6 @@ reactor_id_t reactor_send_zerocopy(reactor_callback_t *callback, void *state, in
       .user_data = (uint64_t) user
     };
 
-  return (reactor_id_t) user;
+  return (reactor_t) user;
 }
 #endif

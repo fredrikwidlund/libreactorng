@@ -19,7 +19,7 @@ enum
   NETWORK_REUSEPORT = 0x02
 };
 
-typedef reactor_id_t network_t;
+typedef reactor_t network_t;
 
 void      network_construct(void);
 void      network_destruct(void);

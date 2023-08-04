@@ -118,7 +118,7 @@ static void test_poll(__attribute__((unused)) void **arg)
 {
   struct state state = {.ignore_value = true};
   int fd[2];
-  reactor_id_t id;
+  reactor_t id;
 
   /* remove */
   assert(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);

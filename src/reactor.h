@@ -8,10 +8,10 @@ extern void mock_assert(const int, const char* const, const char * const, const 
     mock_assert((int)(expression), #expression, __FILE__, __LINE__);
 #endif
 
-#define REACTOR_VERSION       "1.0.0-alpha"
-#define REACTOR_VERSION_MAJOR 1
-#define REACTOR_VERSION_MINOR 0
-#define REACTOR_VERSION_PATCH 0
+#define REACTOR_VERSION       "0.9.1"
+#define REACTOR_VERSION_MAJOR 0
+#define REACTOR_VERSION_MINOR 9
+#define REACTOR_VERSION_PATCH 1
 
 #define reactor_likely(x)   __builtin_expect(!!(x), 1)
 #define reactor_unlikely(x) __builtin_expect(!!(x), 0)
