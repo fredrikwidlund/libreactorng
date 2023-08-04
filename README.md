@@ -541,7 +541,7 @@ int main(int argc, char **argv)
 
 ### Resolvers
 
-Network address and service translation. The resolver will cache results for 10 seconds (10^10ns), configurable with ```network_expire()```. Identical requests will be consolidated and queued to avoid thundering heard issues.
+Network address and service translation. The resolver will cache results for 10 seconds (10^10ns), configurable with ```network_expire()```. Identical requests will be consolidated and queued to avoid thundering herd issues.
 
 #### Example
 
