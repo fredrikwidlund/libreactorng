@@ -16,7 +16,7 @@ struct timeout
   reactor_user_t  user;
   reactor_time_t  time;
   reactor_time_t  delay;
-  reactor_id_t    timeout;
+  reactor_t       timeout;
   struct timespec tv;
 };
 

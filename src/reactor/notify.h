@@ -33,8 +33,8 @@ struct notify
 {
   reactor_user_t  user;
   int             fd;
-  reactor_id_t    read;
-  reactor_id_t    next;
+  reactor_t       read;
+  reactor_t       next;
   list_t          entries;
   mapi_t          ids;
   maps_t          paths;

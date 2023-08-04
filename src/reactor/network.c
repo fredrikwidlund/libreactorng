@@ -31,7 +31,7 @@ struct network_resolve_task
 {
   network_task_t    task;
   char             *host;
-  reactor_id_t      next;
+  reactor_t         next;
 };
 
 struct network_accept_task
@@ -41,7 +41,7 @@ struct network_accept_task
   int               flags;
   network_t         resolve;
   int               fd;
-  reactor_id_t      accept;
+  reactor_t         accept;
 };
 
 struct network_connect_task
@@ -50,7 +50,7 @@ struct network_connect_task
   int               port;
   network_t         resolve;
   int               fd;
-  reactor_id_t      connect;
+  reactor_t         connect;
   struct sockaddr  *addr;
   socklen_t         addrlen;
 };
@@ -60,7 +60,7 @@ struct network_cache
   const char       *host;
   uint64_t          expire;
   struct addrinfo  *ai;
-  reactor_id_t      async;
+  reactor_t         async;
   list_t            requests;
 };
 

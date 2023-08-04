@@ -1,4 +1,3 @@
-* refactor reactor_id_t to reactor_t
 * add streams
 * change char to utf8_t in string, and perhaps change to string_utf8_t type
 * reference and data values
