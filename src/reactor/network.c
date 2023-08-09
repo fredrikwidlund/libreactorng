@@ -310,12 +310,12 @@ static void network_accept_task_socket(network_accept_task_t *task, struct socka
   memcpy(addr_copy, addr, addrlen);
   if (task->port)
   {
-    if (addr->sa_family == AF_INET)
-      ((struct sockaddr_in *) addr)->sin_port = htons(task->port);
+    if (addr_copy->sa_family == AF_INET)
+      ((struct sockaddr_in *) addr_copy)->sin_port = htons(task->port);
     else
     {
-      assert(addr->sa_family == AF_INET6);
-      ((struct sockaddr_in6 *) addr)->sin6_port = htons(task->port);
+      assert(addr_copy->sa_family == AF_INET6);
+      ((struct sockaddr_in6 *) addr_copy)->sin6_port = htons(task->port);
     }
   }
   e = bind(task->fd, addr_copy, addrlen);
