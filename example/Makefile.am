@@ -13,6 +13,7 @@ signal \
 timeout \
 notify \
 lookup \
-scan
+scan \
+stream
 
 MAINTAINERCLEANFILES 		= Makefile.in

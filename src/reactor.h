@@ -39,6 +39,7 @@ extern "C" {
 #include "reactor/timeout.h"
 #include "reactor/notify.h"
 #include "reactor/network.h"
+#include "reactor/stream.h"
 
 #ifdef __cplusplus
 }
