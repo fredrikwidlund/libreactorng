@@ -13,7 +13,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 - Generic [event driven framework](#events)
 - Support for [threads](#threads)
 - Low level [io_uring abstrations](#io-uring)
-- High level event abstrations such as [signals](#signals), [timers](#timers), [file system event notifiers](#notify)
+- High level event abstrations such as [signals](#signals), [timers](#timers), [file system event notifiers](#notify), [buffered streams](#streams)
 - Network abstractions supporting [servers](#servers), [clients](#clients) and [resolvers](#resolvers)
 - Message queues
 - Declarative graph based data flow application framework
@@ -464,6 +464,45 @@ int main(int argc, char **argv)
   }
   reactor_loop();
   notify_destruct(&notify);
+  reactor_destruct();
+}
+```
+
+### Streams
+
+Buffered streams with read/write/flush semantics on top of file descriptors and sockets.
+
+#### Example
+
+Stream from stdin.
+
+```C
+static void input(reactor_event_t *event)
+{
+  stream_t *stream = event->state;
+  data_t data;
+
+  switch (event->type)
+  {
+  case STREAM_READ:
+    data = stream_read(stream);
+    stream_consume(stream, data_size(data));
+    fwrite(data_base(data), data_size(data), 1, stdout);
+    break;
+  case STREAM_CLOSE:
+    stream_destruct(stream);
+    break;
+  }
+}
+
+int main()
+{
+  stream_t s;
+
+  reactor_construct();
+  stream_construct(&s, input, &s);
+  stream_open(&s, 0);
+  reactor_loop();
   reactor_destruct();
 }
 ```
