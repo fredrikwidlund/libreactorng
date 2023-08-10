@@ -501,7 +501,7 @@ int main()
 
   reactor_construct();
   stream_construct(&s, input, &s);
-  stream_open(&s, 0);
+  stream_open(&s, 0, 0);
   reactor_loop();
   reactor_destruct();
 }
