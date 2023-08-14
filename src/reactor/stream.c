@@ -21,40 +21,27 @@ static void stream_release_buffer(reactor_event_t *event)
   free(event->state);
 }
 
+__attribute__((flatten))
 static void stream_recv(reactor_event_t *event)
 {
   stream_t *stream = event->state;
   int result = event->data;
 
   stream->read = 0;
-  if (result > 0)
+  if (reactor_unlikely(result <= 0))
   {
-    stream->input_offset += result;
-    buffer_resize(&stream->input, buffer_size(&stream->input) + result);
-    stream_input(stream);
-    reactor_call(&stream->user, STREAM_READ, 0);
-  }
-  else
     reactor_call(&stream->user, result == 0 ? STREAM_CLOSE : STREAM_ERROR, -result);
-}
-
-static void stream_input(stream_t *stream)
-{
-  const size_t size = STREAM_BLOCK_SIZE;
-
-  assert(stream->read == 0);
-  if (stream->input_consumed)
-  {
-    buffer_erase(&stream->input, 0, stream->input_consumed);
-    stream->input_consumed = 0;
+    return;
   }
 
-  buffer_reserve(&stream->input, MAX(buffer_size(&stream->input) + size, 2 * size));
-  stream->read = stream->type == STREAM_TYPE_SOCKET ?
-    reactor_recv(stream_recv, stream, stream->fd, buffer_end(&stream->input), size, 0) :
-    reactor_read(stream_recv, stream, stream->fd, buffer_end(&stream->input), size, stream->input_offset);
+  stream->input_offset += result;
+  buffer_resize(&stream->input, buffer_size(&stream->input) + result);
+  reactor_call(&stream->user, STREAM_READ, 0);
+  if (reactor_unlikely(!stream->write))
+    stream_input(stream);
 }
 
+__attribute__((flatten))
 static void stream_send(reactor_event_t *event)
 {
   stream_t *stream = event->state;
@@ -62,24 +49,45 @@ static void stream_send(reactor_event_t *event)
   buffer_t *buffer;
 
   stream->write = 0;
-  if (result > 0)
+  if (result <= 0)
   {
-    stream->output_offset += result;
-    buffer = &stream->output[!stream->output_current];
-    assert((size_t) result == buffer_size(buffer));
-    buffer_clear(buffer);
-    stream_output(stream);
-  }
-  else
     reactor_call(&stream->user, STREAM_ERROR, -result);
+    return;
+  }
+
+  stream->output_offset += result;
+  buffer = &stream->output[!stream->output_current];
+  assert((size_t) result == buffer_size(buffer));
+  buffer_clear(buffer);
+  stream_output(stream);
+  if (reactor_likely(!stream->write))
+    stream_input(stream);
 }
 
+__attribute__((flatten))
+static void stream_input(stream_t *stream)
+{
+  const size_t size = STREAM_BLOCK_SIZE;
+
+  if (reactor_likely(stream->input_consumed))
+  {
+    buffer_erase(&stream->input, 0, stream->input_consumed);
+    stream->input_consumed = 0;
+  }
+
+  buffer_reserve(&stream->input, buffer_size(&stream->input) + size);
+  stream->read = reactor_likely(stream->type == STREAM_TYPE_SOCKET) ?
+    reactor_recv(stream_recv, stream, stream->fd, buffer_end(&stream->input), size, 0) :
+    reactor_read(stream_recv, stream, stream->fd, buffer_end(&stream->input), size, stream->input_offset);
+}
+
+__attribute__((flatten))
 static void stream_output(stream_t *stream)
 {
   data_t data;
   buffer_t *current, *next;
 
-  if (stream->write || !stream->output_flushed)
+  if (reactor_unlikely(stream->write) || reactor_unlikely(!stream->output_flushed))
     return;
 
   current = &stream->output[stream->output_current];
@@ -91,7 +99,7 @@ static void stream_output(stream_t *stream)
   buffer_resize(current, stream->output_flushed);
   stream->output_flushed = 0;
 
-  stream->write = stream->type == STREAM_TYPE_SOCKET ?
+  stream->write = reactor_likely(stream->type == STREAM_TYPE_SOCKET) ?
     reactor_send(stream_send, stream, stream->fd, data_base(data), data_size(data), 0) :
     reactor_write(stream_send, stream, stream->fd, data_base(data), data_size(data), stream->output_offset);
 
@@ -145,26 +153,31 @@ void stream_close(stream_t *stream)
   }
 }
 
+inline __attribute__((always_inline, flatten))
 data_t stream_read(stream_t *stream)
 {
   return data_offset(buffer_data(&stream->input), stream->input_consumed);
 }
 
+inline __attribute__((always_inline, flatten))
 void stream_consume(stream_t *stream, size_t size)
 {
   stream->input_consumed += size;
 }
 
+inline __attribute__((always_inline, flatten))
 void *stream_allocate(stream_t *stream, size_t size)
 {
   return data_base(buffer_allocate(&stream->output[stream->output_current], size));
 }
 
+inline __attribute__((always_inline, flatten))
 void stream_write(stream_t *stream, data_t data)
 {
   memcpy(stream_allocate(stream, data_size(data)), data_base(data), data_size(data));
 }
 
+inline __attribute__((always_inline, flatten))
 void stream_flush(stream_t *stream)
 {
   stream->output_flushed = buffer_size(&stream->output[stream->output_current]);
