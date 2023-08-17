@@ -20,25 +20,28 @@ struct server
 {
   reactor_user_t  user;
   network_t       accept;
+  timeout_t       timeout;
   list_t          sessions;
 };
 
 struct server_session
 {
+  reactor_user_t  user;
   http_request_t  request;
-  server_t       *server;
   stream_t        stream;
   int             flags;
   bool           *abort;
-
-  size_t          ref;
   reactor_t       next;
 };
 
 void server_construct(server_t *, reactor_callback_t *, void *);
 void server_destruct(server_t *);
 void server_open(server_t *, const char *, int);
+void server_open_socket(server_t *, int);
 void server_close(server_t *);
-void server_hello(server_session_t *);
+void server_disconnect(server_session_t *);
+void server_respond(server_session_t *, string_t, string_t, data_t, http_field_t *, size_t);
+void server_ok(server_session_t *, string_t, data_t, http_field_t *, size_t);
+void server_plain(server_session_t *, data_t, http_field_t *, size_t);
 
 #endif /* REACTOR_SERVER_H_INCLUDED */

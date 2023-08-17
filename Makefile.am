@@ -106,7 +106,9 @@ test/timeout \
 test/notify \
 test/network_resolve \
 test/network \
-test/stream
+test/stream \
+test/http \
+test/server
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 

@@ -90,7 +90,7 @@ static void state_timeout(reactor_event_t *event)
 
 int main()
 {
-  struct state state = {.seconds = 5};
+  struct state state = {.seconds = 1};
   struct timespec tv = {.tv_sec = state.seconds};
   int i, n = 256;
 

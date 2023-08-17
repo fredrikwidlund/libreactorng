@@ -8,14 +8,14 @@ typedef struct http_field http_field_t;
 
 struct http_field
 {
-  data_t       name;
-  data_t       value;
+  string_t     name;
+  string_t     value;
 };
 
 struct http_request
 {
-  data_t       method;
-  data_t       target;
+  string_t     method;
+  string_t     target;
   data_t       body;
   http_field_t fields[16];
   size_t       fields_count;
@@ -23,14 +23,16 @@ struct http_request
 
 struct http_response
 {
-  data_t       status;
-  data_t       date;
-  data_t       type;
+  string_t     status;
+  string_t     date;
+  string_t     type;
   data_t       body;
   http_field_t fields[16];
   size_t       fields_count;
 };
 
-int http_request_read(http_request_t *, stream_t *);
+http_field_t http_field_define(string_t, string_t);
+int          http_read_request(stream_t *, string_t *, string_t *, http_field_t *, size_t *);
+void         http_write_response(stream_t *, string_t, string_t, string_t, data_t, http_field_t *, size_t);
 
 #endif /* REACTOR_HTTP_H_INCLUDED */

@@ -1,4 +1,5 @@
-* streams with graceful close, or flush event
+* request body parsing
+* streams with graceful close, or flush event?
 * change char to utf8_t in string, and perhaps change to string_utf8_t type
 * reference and data values
 * ascii option

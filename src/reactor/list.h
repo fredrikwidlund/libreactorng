@@ -45,6 +45,7 @@ void   *list_push_front(list_t *, const void *, size_t);
 void   *list_push_back(list_t *, const void *, size_t);
 void   *list_insert(void *, const void *, size_t);
 void    list_splice(void *, void *);
+void    list_detach(void *);
 void    list_erase(void *, list_release_t *);
 void    list_clear(list_t *, list_release_t *);
 

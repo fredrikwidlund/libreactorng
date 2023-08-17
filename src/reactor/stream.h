@@ -20,26 +20,30 @@ typedef struct stream stream_t;
 
 struct stream
 {
-  reactor_user_t user;
-  int            fd;
-  int            type;
-  int            flags;
+  reactor_user_t  user;
+  int             fd;
+  int             type;
+  int             flags;
+  bool           *abort;
 
-  reactor_t      read;
-  size_t         input_offset;
-  buffer_t       input;
-  size_t         input_consumed;
+  reactor_t       read;
+  size_t          input_offset;
+  buffer_t        input;
+  size_t          input_consumed;
 
-  reactor_t      write;
-  size_t         output_offset;
-  int            output_current;
-  buffer_t       output[2];
-  size_t         output_flushed;
+  reactor_t       write;
+  size_t          output_offset;
+  size_t          output_partial;
+  buffer_t        output_writing;
+  buffer_t        output_waiting;
+  size_t          output_flushed;
 };
 
 void    stream_construct(stream_t *, reactor_callback_t *, void *);
 void    stream_destruct(stream_t *);
 void    stream_open(stream_t *, int, int);
+int     stream_fd(stream_t *);
+bool    stream_is_open(stream_t *);
 void    stream_close(stream_t *);
 data_t  stream_read(stream_t *);
 void    stream_consume(stream_t *, size_t);

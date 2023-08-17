@@ -114,6 +114,11 @@ void test_unit(__attribute__((unused)) void **state)
   assert_int_equal(*(int *) list_next(list_front(&l)), 3);
   list_destruct(&l2, NULL);
 
+  list_clear(&l, NULL);
+  p = list_push_back(&l, (int[]) {1}, sizeof(int));
+  list_detach(p);
+  list_erase(p, NULL);
+
   list_destruct(&l, NULL);
 }
 

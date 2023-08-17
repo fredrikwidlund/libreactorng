@@ -42,6 +42,7 @@ void    buffer_clear(buffer_t *);
 void    buffer_read(buffer_t *restrict, FILE *restrict);
 bool    buffer_load(buffer_t *, const char *);
 bool    buffer_loadz(buffer_t *restrict, const char *);
+void    buffer_switch(buffer_t *restrict, buffer_t *restrict);
 
 /* element access */
 
