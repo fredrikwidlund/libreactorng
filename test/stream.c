@@ -65,6 +65,7 @@ static void test_domain_socket(__attribute__((unused)) void **arg)
   stream_flush(&state.out);
   reactor_loop_once();
   stream_close(&state.in);
+  assert_int_equal(stream_fd(&state.in), -1);
   reactor_loop();
   stream_destruct(&state.in);
   stream_destruct(&state.out);
@@ -91,14 +92,19 @@ static void test_pipe(__attribute__((unused)) void **arg)
   stream_write(&state.out, data(chunk, sizeof chunk));
   stream_flush(&state.out);
   stream_flush(&state.out);
-  reactor_loop_once();
+  reactor_loop();
+  assert_int_equal(state.errors, 1);
+
+  stream_write(&state.out, data(chunk, sizeof chunk));
+  stream_flush(&state.out);
   stream_close(&state.out);
   reactor_loop();
+  assert_int_equal(state.errors, 1);
+
   stream_destruct(&state.in);
   stream_destruct(&state.out);
   reactor_destruct();
   assert_true(state.calls >= 2);
-  assert_int_equal(state.errors, 0);
   close(fd[0]);
   close(fd[1]);
 }
@@ -128,7 +134,6 @@ static void test_error(__attribute__((unused)) void **arg)
   close(fd[0]);
   close(fd[1]);
 }
-
 
 int main()
 {

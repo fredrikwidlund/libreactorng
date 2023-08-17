@@ -14,6 +14,8 @@ timeout \
 notify \
 lookup \
 scan \
-stream
+stream \
+clients \
+server
 
 MAINTAINERCLEANFILES 		= Makefile.in

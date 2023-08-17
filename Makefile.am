@@ -3,6 +3,7 @@ ACLOCAL_AMFLAGS			= ${ACLOCAL_FLAGS} -I m4
 DIST_SUBDIRS                    = example
 
 SOURCE_FILES = \
+src/picohttpparser/picohttpparser.c \
 src/reactor/data.c \
 src/reactor/hash.c \
 src/reactor/buffer.c \
@@ -22,9 +23,12 @@ src/reactor/signal.c \
 src/reactor/timeout.c \
 src/reactor/notify.c \
 src/reactor/network.c \
-src/reactor/stream.c
+src/reactor/stream.c \
+src/reactor/http.c \
+src/reactor/server.c
 
 HEADER_FILES = \
+src/picohttpparser/picohttpparser.h \
 src/reactor/data.h \
 src/reactor/hash.h \
 src/reactor/buffer.h \
@@ -44,11 +48,13 @@ src/reactor/signal.h \
 src/reactor/timeout.h \
 src/reactor/notify.h \
 src/reactor/network.h \
-src/reactor/stream.h
+src/reactor/stream.h \
+src/reactor/http.h \
+src/reactor/server.h
 
 lib_LTLIBRARIES 		= libreactor.la
 libreactor_la_SOURCES 		= $(SOURCE_FILES) $(HEADER_FILES)
-libreactor_la_CFLAGS		= -std=gnu2x -g -O3 -flto=auto -march=native -I$(srcdir)/src -fPIC
+libreactor_la_CFLAGS		= -std=gnu2x -g -O3 -flto=auto -rdynamic -march=native -I$(srcdir)/src -fPIC
 libreactor_la_LDFLAGS		= -static
 
 headerfilesdir                  = $(includedir)/reactor
@@ -100,7 +106,9 @@ test/timeout \
 test/notify \
 test/network_resolve \
 test/network \
-test/stream
+test/stream \
+test/http \
+test/server
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 

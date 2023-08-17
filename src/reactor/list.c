@@ -114,6 +114,16 @@ void list_splice(void *object1, void *object2)
   from->list.next->list.previous = from;
 }
 
+void list_detach(void *object)
+{
+  list_item_t *item = list_object_item(object);
+
+  item->list.previous->list.next = item->list.next;
+  item->list.next->list.previous = item->list.previous;
+  item->list.next = item;
+  item->list.previous = item;
+}
+
 void list_erase(void *object, list_release_t *release)
 {
   list_item_t *item = list_object_item(object);

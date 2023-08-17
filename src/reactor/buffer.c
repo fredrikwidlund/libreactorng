@@ -176,6 +176,15 @@ bool buffer_loadz(buffer_t *restrict buffer, const char *path)
   return true;
 }
 
+void buffer_switch(buffer_t *restrict b1, buffer_t *restrict b2)
+{
+  buffer_t tmp;
+
+  tmp = *b1;
+  *b1 = *b2;
+  *b2 = tmp;
+}
+
 /* element access */
 
 data_t buffer_data(const buffer_t *buffer)
