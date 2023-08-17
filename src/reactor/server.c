@@ -42,7 +42,8 @@ static void server_session_read(server_session_t *session)
   while (session->flags & SERVER_SESSION_READY)
   {
     session->request.fields_count = 16;
-    n = http_read_request(&session->stream, &session->request.method, &session->request.target, session->request.fields, &session->request.fields_count);
+    n = http_read_request(&session->stream, &session->request.method, &session->request.target, &session->request.body,
+                          session->request.fields, &session->request.fields_count);
     if (reactor_unlikely(n == -1))
     {
       server_session_close(session);

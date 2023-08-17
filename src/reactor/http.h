@@ -32,7 +32,8 @@ struct http_response
 };
 
 http_field_t http_field_define(string_t, string_t);
-int          http_read_request(stream_t *, string_t *, string_t *, http_field_t *, size_t *);
+string_t     http_field_lookup(http_field_t *, size_t, string_t);
+int          http_read_request(stream_t *, string_t *, string_t *, data_t *, http_field_t *, size_t *);
 void         http_write_response(stream_t *, string_t, string_t, string_t, data_t, http_field_t *, size_t);
 
 #endif /* REACTOR_HTTP_H_INCLUDED */
