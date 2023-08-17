@@ -113,6 +113,8 @@ test/http \
 test/server \
 test/queue
 
-dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
+dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh test/verbose.sh
 
 TESTS 				= $(check_PROGRAMS) test/valgrind.sh test/coverage.sh
+
+LOG_COMPILER 			= test/verbose.sh

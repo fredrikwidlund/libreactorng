@@ -86,7 +86,6 @@ static void test_queue(__attribute__((unused)) void **arg)
   /* cancel read */
   reactor_construct();
   queue_construct(&s.queue, sizeof (int));
-
   queue_consumer_construct(&s.consumer, callback, &s);
   queue_consumer_open(&s.consumer, &s.queue, 1);
   queue_consumer_pop(&s.consumer);
@@ -94,7 +93,6 @@ static void test_queue(__attribute__((unused)) void **arg)
   queue_destruct(&s.queue);
   reactor_loop();
   reactor_destruct();
-  return;
 
   /* producer errors */
   reactor_construct();
