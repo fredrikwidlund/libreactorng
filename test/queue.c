@@ -83,7 +83,6 @@ static void test_queue(__attribute__((unused)) void **arg)
   reactor_destruct();
   assert_int_equal(s.calls, 1000);
 
-  return;
   /* cancel read */
   reactor_construct();
   queue_construct(&s.queue, sizeof (int));
@@ -95,6 +94,7 @@ static void test_queue(__attribute__((unused)) void **arg)
   queue_destruct(&s.queue);
   reactor_loop();
   reactor_destruct();
+  return;
 
   /* producer errors */
   reactor_construct();
