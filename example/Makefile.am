@@ -16,6 +16,8 @@ lookup \
 scan \
 stream \
 clients \
-server
+server \
+mpmc \
+queue
 
 MAINTAINERCLEANFILES 		= Makefile.in

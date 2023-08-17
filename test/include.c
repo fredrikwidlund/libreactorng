@@ -6,7 +6,7 @@
 
 static void test_include(__attribute__((unused)) void **arg)
 {
-  assert_string_equal(REACTOR_VERSION, "0.9.1");
+  assert_string_equal(REACTOR_VERSION, "0.9.2");
 }
 
 int main()
