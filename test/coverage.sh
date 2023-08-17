@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for file in data hash buffer list vector map mapi maps mapd string value encode decode pool reactor signal timeout notify network stream http server
+for file in data hash buffer list vector map mapi maps mapd string value encode decode pool reactor signal timeout notify network stream http server queue
 do
     echo [$file]
     test=`gcov -b src/reactor/libreactor_test_a-$file | grep -A4 File.*$file`

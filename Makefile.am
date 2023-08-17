@@ -25,7 +25,8 @@ src/reactor/notify.c \
 src/reactor/network.c \
 src/reactor/stream.c \
 src/reactor/http.c \
-src/reactor/server.c
+src/reactor/server.c \
+src/reactor/queue.c
 
 HEADER_FILES = \
 src/picohttpparser/picohttpparser.h \
@@ -50,7 +51,8 @@ src/reactor/notify.h \
 src/reactor/network.h \
 src/reactor/stream.h \
 src/reactor/http.h \
-src/reactor/server.h
+src/reactor/server.h \
+src/reactor/queue.h
 
 lib_LTLIBRARIES 		= libreactor.la
 libreactor_la_SOURCES 		= $(SOURCE_FILES) $(HEADER_FILES)
@@ -108,7 +110,8 @@ test/network_resolve \
 test/network \
 test/stream \
 test/http \
-test/server
+test/server \
+test/queue
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 
