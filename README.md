@@ -15,6 +15,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 - Low level [io_uring abstrations](#io-uring)
 - High level event abstrations such as [signals](#signals), [timers](#timers), [file system event notifiers](#notify), [buffered streams](#streams)
 - Network abstractions supporting [servers](#servers), [clients](#clients) and [resolvers](#resolvers)
+- [HTTP framework](#http)
 - Message queues
 - Declarative graph based data flow application framework
 
@@ -604,6 +605,32 @@ int main(int argc, char **argv)
 {
   reactor_construct();
   network_resolve(callback, NULL, "www.google.com");
+  reactor_loop();
+  reactor_destruct();
+}
+```
+
+### HTTP
+
+Server framework for creating webservers and API services.
+
+#### Example
+
+Simple HTTP server.
+
+```C
+static void handle_request(reactor_event_t *event)
+{
+  server_plain((server_session_t *) event->data, string("hello"), NULL, 0);
+}
+
+int main()
+{
+  server_t server;
+
+  reactor_construct();
+  server_construct(&server, handle_request, NULL);
+  server_open(&server, "127.0.0.1", 80);
   reactor_loop();
   reactor_destruct();
 }
