@@ -43,6 +43,7 @@ extern "C" {
 #include "reactor/http.h"
 #include "reactor/server.h"
 #include "reactor/queue.h"
+#include "reactor/flow.h"
 
 #ifdef __cplusplus
 }

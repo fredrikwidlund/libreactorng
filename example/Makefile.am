@@ -18,6 +18,18 @@ stream \
 clients \
 server \
 mpmc \
-queue
+queue \
+flow
+
+flow_LDADD 			= -lltdl ../libreactor.la
+
+lib_LTLIBRARIES 		= \
+module1.la \
+module2.la
+
+module1_la_LDFLAGS 		= -module -avoid-version
+module1_la_LIBADD		= ../libreactor.la
+module2_la_LDFLAGS 		= -module -avoid-version
+module2_la_LIBADD		= ../libreactor.la
 
 MAINTAINERCLEANFILES 		= Makefile.in
