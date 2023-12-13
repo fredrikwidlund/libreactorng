@@ -77,7 +77,15 @@ void buffer_compact(buffer_t *buffer)
   size = buffer_size(buffer);
   if (buffer->capacity > size)
   {
-    buffer->data = data(realloc(buffer_base(buffer), size), size);
+    if (size)
+    {
+      buffer->data = data(realloc(buffer_base(buffer), size), size);
+    }
+    else
+    {
+      free(buffer_base(buffer));
+      buffer->data = data_null();
+    }
     buffer->capacity = size;
   }
 }
