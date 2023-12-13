@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <unistd.h>
 #include <threads.h>
+#include <signal.h>
 #include <sys/eventfd.h>
 #include <sys/mman.h>
 #include <sys/syscall.h>
@@ -210,6 +211,7 @@ void reactor_construct(void)
 {
   if (!reactor.ref)
   {
+    signal(SIGPIPE, SIG_IGN);
     reactor_ring_construct(&reactor.ring, REACTOR_RING_SIZE);
     pool_construct(&reactor.users, sizeof(reactor_user_t));
     reactor.next_current = &reactor.next[0];
