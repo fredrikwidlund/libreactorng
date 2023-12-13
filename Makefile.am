@@ -113,7 +113,10 @@ test/network \
 test/stream \
 test/http \
 test/server \
-test/queue
+test/queue \
+test/flow
+
+test_flow_LDADD			= $(LDADD) -lltdl
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 

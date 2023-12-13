@@ -196,7 +196,6 @@ static void flow_open_module(const char *name, void **handle, flow_table_t **tab
   lt_dladvise_global(&advise);
   *handle = lt_dlopenadvise(name, advise);
   lt_dladvise_destroy(&advise);
-
   *table = lt_dlsym(*handle, "module");
   if (!*table)
   {
