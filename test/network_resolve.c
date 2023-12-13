@@ -35,13 +35,13 @@ static void test_resolve(__attribute__((unused)) void **arg)
 
   id = network_resolve(callback, &state, "127.0.0.1");
   network_cancel(id);
-  id = network_resolve(callback, &state, "fail");
+  id = network_resolve(callback, &state, "fail.localdomain");
   network_cancel(id);
   reactor_loop();
 
   network_resolve(callback, &state, "127.0.0.1");
-  network_resolve(callback, &state, "fail");
-  network_resolve(callback, &state, "fail");
+  network_resolve(callback, &state, "fail.localdomain");
+  network_resolve(callback, &state, "fail.localdomain");
   reactor_loop();
 
   network_resolve(callback, &state, NULL);
