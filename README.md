@@ -16,7 +16,7 @@ libreactor is a [high performance](#performance), [robust and secure](#security)
 - High level event abstrations such as [signals](#signals), [timers](#timers), [file system event notifiers](#notify), [buffered streams](#streams)
 - Network abstractions supporting [servers](#servers), [clients](#clients) and [resolvers](#resolvers)
 - [HTTP framework](#http)
-- Message queues
+- Multi-producer multi-consumer [message queues](#queues)
 - Declarative graph based data flow application framework
 
 ## Performance
@@ -632,6 +632,74 @@ int main()
   server_construct(&server, handle_request, NULL);
   server_open(&server, "127.0.0.1", 80);
   reactor_loop();
+  reactor_destruct();
+}
+```
+
+### Queues
+
+Message queues suitable for communication between different reactor threads.
+
+#### Example
+
+Single-producer single-consumer example.
+
+```C
+static void sender(reactor_event_t *event)
+{
+  queue_t *queue = event->state;
+  queue_producer_t producer;
+  int i;
+
+  if (event->type == REACTOR_RETURN)
+    return;
+
+  reactor_construct();
+  queue_producer_construct(&producer);
+  queue_producer_open(&producer, queue);
+  for (i = 10; i >= 0; i--)
+    queue_producer_push(&producer, (int []){i});
+  reactor_loop();
+  queue_producer_destruct(&producer);
+  reactor_destruct();
+}
+
+static void receiver_event(reactor_event_t *event)
+{
+  int *element = (int *) event->data;
+
+  printf("%d\n", *element);
+  if (*element == 0)
+    queue_consumer_close(event->state);
+}
+
+static void receiver(reactor_event_t *event)
+{
+  queue_t *queue = event->state;
+  queue_consumer_t consumer;
+
+  if (event->type == REACTOR_RETURN)
+    return;
+
+  reactor_construct();
+  queue_consumer_construct(&consumer, receiver_event, &consumer);
+  queue_consumer_open(&consumer, queue, 1);
+  queue_consumer_pop(&consumer);
+  reactor_loop();
+  queue_consumer_destruct(&consumer);
+  reactor_destruct();
+}
+
+int main()
+{
+  queue_t queue;
+
+  reactor_construct();
+  queue_construct(&queue, sizeof(int));
+  reactor_async(sender, &queue);
+  reactor_async(receiver, &queue);
+  reactor_loop();
+  queue_destruct(&queue);
   reactor_destruct();
 }
 ```

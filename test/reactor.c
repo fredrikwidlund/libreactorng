@@ -105,7 +105,7 @@ static void test_readv_writev(__attribute__((unused)) void **arg)
   close(fd[1]);
 
   assert_int_equal(state.calls, 2);
-  assert_string_equal(buffer, "test");
+  assert_true(memcmp(buffer, "test", sizeof buffer) == 0);
 }
 
 static void test_fsync(__attribute__((unused)) void **arg)
@@ -212,7 +212,7 @@ static void test_recvmsg_sendmsg(__attribute__((unused)) void **arg)
   close(fd[1]);
 
   assert_int_equal(state.calls, 2);
-  assert_string_equal(buffer, "test");
+  assert_true(memcmp(buffer, "test", sizeof buffer) == 0);
 }
 
 static void test_send(__attribute__((unused)) void **arg)
