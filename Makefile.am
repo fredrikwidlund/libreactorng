@@ -82,7 +82,7 @@ indent:
 
 ### unit testing ###
 
-AM_CFLAGS 			= -std=gnu2x -O0 -g -ftest-coverage -fprofile-arcs -I$(srcdir)/src -DGCOV_BUILD -DUNIT_TESTING
+AM_CFLAGS 			= -std=gnu2x -g -O0 -rdynamic -fPIC -ftest-coverage -fprofile-arcs -I$(srcdir)/src -DGCOV_BUILD -DUNIT_TESTING
 LDADD 				= -L. libreactor_test.a -lcmocka
 
 check_LIBRARIES 		= libreactor_test.a
@@ -114,9 +114,20 @@ test/stream \
 test/http \
 test/server \
 test/queue \
-test/flow
+test/flow \
+test/flow_async
 
 test_flow_LDADD			= $(LDADD) -lltdl
+test_flow_async_LDADD		= $(LDADD) -lltdl
+
+lib_LTLIBRARIES 		+= \
+test/conf/module1.la \
+test/conf/module2.la
+
+test_conf_module1_la_LDFLAGS 	= -module -avoid-version
+test_conf_module1_la_LIBADD  	= -L. libreactor_test.a
+test_conf_module2_la_LDFLAGS 	= -module -avoid-version
+test_conf_module2_la_LIBADD  	= -L. libreactor_test.a
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 
