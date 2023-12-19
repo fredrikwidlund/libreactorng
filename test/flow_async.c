@@ -64,6 +64,7 @@ static void test_cancel(__attribute__((unused)) void **arg)
   flow_stop(&flow);
   flow_destruct(&flow);
   reactor_destruct();
+  sleep(1);
 }
 
 int main()
