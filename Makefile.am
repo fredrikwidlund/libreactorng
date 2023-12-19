@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS		= subdir-objects
+AUTOMAKE_OPTIONS		= subdir-objects serial-tests
 ACLOCAL_AMFLAGS			= ${ACLOCAL_FLAGS} -I m4
 DIST_SUBDIRS                    = example
 
