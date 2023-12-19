@@ -30,7 +30,7 @@ static void test_node(__attribute__((unused)) void **arg)
 
   reactor_construct();
   flow_construct(&flow, NULL, NULL);
-  flow_search(&flow, "test/flow_data");
+  flow_search(&flow, "test/conf");
 
   assert_true(flow_node(&flow, "s1", "module1", NULL, value_null()) == 0);
   assert_true(flow_node(&flow, "s2", "module1", NULL, value_null()) == 0);
