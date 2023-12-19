@@ -104,7 +104,6 @@ test/string \
 test/value \
 test/encode \
 test/pool \
-test/reactor \
 test/signal \
 test/timeout \
 test/notify \
@@ -115,7 +114,8 @@ test/http \
 test/server \
 test/queue \
 test/flow \
-test/flow_async
+test/flow_async \
+test/reactor
 
 test_flow_LDADD			= $(LDADD) -lltdl
 test_flow_async_LDADD		= $(LDADD) -lltdl
