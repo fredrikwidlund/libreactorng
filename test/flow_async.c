@@ -62,9 +62,9 @@ static void test_cancel(__attribute__((unused)) void **arg)
   assert_true(flow_node(&flow, "s1", "module1", "s1", value_null()) == 0);
   flow_start(&flow);
   flow_stop(&flow);
+  sleep(1);
   flow_destruct(&flow);
   reactor_destruct();
-  sleep(1);
 }
 
 int main()
