@@ -125,9 +125,9 @@ test/conf/module1.la \
 test/conf/module2.la
 
 test_conf_module1_la_LDFLAGS 	= -rpath /foo -module -avoid-version 
-test_conf_module1_la_LIBADD  	=  -L. -lreactor
+test_conf_module1_la_LIBADD  	=  -L. -lreactor_test
 test_conf_module2_la_LDFLAGS 	= -rpath /foo -module -avoid-version
-test_conf_module2_la_LIBADD  	=  -L. -lreactor
+test_conf_module2_la_LIBADD  	=  -L. -lreactor_test
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 
