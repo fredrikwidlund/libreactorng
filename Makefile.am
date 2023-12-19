@@ -90,6 +90,7 @@ libreactor_test_a_CFLAGS        = $(AM_CFLAGS)
 libreactor_test_a_SOURCES 	= $(SOURCE_FILES) $(HEADER_FILES)
 
 check_PROGRAMS 			= \
+test/reactor \
 test/include \
 test/data \
 test/hash \
@@ -114,8 +115,7 @@ test/http \
 test/server \
 test/queue \
 test/flow_async \
-test/flow \
-test/reactor
+test/flow
 
 test_flow_LDADD			= $(LDADD) -lltdl
 test_flow_async_LDADD		= $(LDADD) -lltdl
@@ -131,4 +131,4 @@ test_conf_module2_la_LIBADD  	=  -L. -lreactor_test
 
 dist_noinst_SCRIPTS             = test/valgrind.sh test/coverage.sh
 
-TESTS 				= $(check_PROGRAMS) test/valgrind.sh test/coverage.sh
+TESTS 				= $(check_PROGRAMS) test/coverage.sh test/valgrind.sh
