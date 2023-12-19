@@ -174,8 +174,7 @@ static void flow_release_group(void *arg)
 
   list_destruct(&group->nodes, flow_release_node);
   free((void *) group->name);
-  if (group->async)
-    reactor_cancel(group->async, NULL, NULL);
+  assert(group->async == 0);
   queue_producer_destruct(&group->log_producer);
 }
 
