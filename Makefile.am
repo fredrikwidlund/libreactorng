@@ -113,8 +113,8 @@ test/stream \
 test/http \
 test/server \
 test/queue \
-test/flow \
 test/flow_async \
+test/flow \
 test/reactor
 
 test_flow_LDADD			= $(LDADD) -lltdl
