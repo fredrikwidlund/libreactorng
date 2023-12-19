@@ -32,7 +32,7 @@ static void test_node(__attribute__((unused)) void **arg)
   flow_construct(&flow, NULL, NULL);
   flow_search(&flow, "test/conf");
 
-  assert_true(flow_node(&flow, "s1", "module1", NULL, value_null()) == 0);
+  assert_true(flow_node(&flow, "s1", "module1", "s1", value_null()) == 0);
   assert_true(flow_node(&flow, "s2", "module1", NULL, value_null()) == 0);
   assert_true(flow_node(&flow, "d1", "module2", NULL, value_null()) == 0);
   assert_true(flow_node(&flow, "d2", "module2", NULL, value_null()) == 0);
@@ -51,12 +51,28 @@ static void test_node(__attribute__((unused)) void **arg)
   reactor_destruct();
 }
 
+static void test_cancel(__attribute__((unused)) void **arg)
+{
+  flow_t flow;
+
+  reactor_construct();
+  flow_construct(&flow, NULL, NULL);
+  flow_search(&flow, "test/conf");
+
+  assert_true(flow_node(&flow, "s1", "module1", "s1", value_null()) == 0);
+  flow_start(&flow);
+  flow_stop(&flow);
+  flow_destruct(&flow);
+  reactor_destruct();
+}
+
 int main()
 {
   const struct CMUnitTest tests[] =
     {
       cmocka_unit_test(test_start),
       cmocka_unit_test(test_node),
+      cmocka_unit_test(test_cancel)
     };
 
   return cmocka_run_group_tests(tests, NULL, NULL);

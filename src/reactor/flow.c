@@ -228,22 +228,16 @@ static flow_module_t *flow_lookup_module(flow_t *flow, const char *name)
 
 static flow_module_t *flow_match_module(flow_t *flow, const char *name)
 {
-  flow_module_t *module, *m;
-  size_t len, n;
+  flow_module_t *module;
+  size_t len;
 
-  m = NULL;
-  n = 0;
   list_foreach(&flow->modules, module)
   {
     len = strlen(module->name);
-    if (len > n && strncmp(name, module->name, len) == 0)
-    {
-      n = len;
-      m = module;
-    }
+    if (strncmp(name, module->name, len) == 0)
+      return module;
   }
-
-  return m ? m : flow_lookup_module(flow, name);
+  return NULL;
 }
 
 static flow_group_t *flow_lookup_group(flow_t *flow, const char *name)

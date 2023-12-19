@@ -72,7 +72,7 @@ pkgconfig_DATA 			= libreactor.pc
 
 MAINTAINERCLEANFILES 		= aclocal.m4 config.h.in configure Makefile.in libreactor-?.?.?.tar.gz
 
-CLEANFILES 			= {.,test/,src/reactor/,src/picohttpparser}/*.{gcno,gcda,gcov}
+CLEANFILES 			= {.,test/,test/conf,src/reactor/,src/picohttpparser}/*.{gcno,gcda,gcov}
 
 maintainer-clean-local:
 	rm -rf autotools m4 libreactor-?.?.?
